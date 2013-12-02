@@ -1,4 +1,4 @@
-package edu.uky.cs335final.basketball.util;
+package edu.uky.cs335final.basketball.shader;
 
 public class OpenGLProgram {
 

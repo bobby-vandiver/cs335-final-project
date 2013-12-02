@@ -7,8 +7,8 @@ import edu.uky.cs335final.basketball.BasketBall;
 import edu.uky.cs335final.basketball.Camera;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Point;
-import edu.uky.cs335final.basketball.util.OpenGLProgram;
-import edu.uky.cs335final.basketball.util.ShaderUtils;
+import edu.uky.cs335final.basketball.shader.OpenGLProgram;
+import edu.uky.cs335final.basketball.shader.ShaderUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

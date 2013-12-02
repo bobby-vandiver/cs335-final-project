@@ -1,4 +1,4 @@
-package edu.uky.cs335final.basketball.util;
+package edu.uky.cs335final.basketball.shader;
 
 import android.content.Context;
 import android.content.res.Resources;

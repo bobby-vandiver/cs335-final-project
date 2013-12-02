@@ -4,8 +4,8 @@ import android.util.Log;
 import edu.uky.cs335final.basketball.geometry.Point;
 import edu.uky.cs335final.basketball.render.Renderable;
 import edu.uky.cs335final.basketball.util.BufferUtils;
-import edu.uky.cs335final.basketball.util.OpenGLProgram;
-import edu.uky.cs335final.basketball.util.ShaderConstants;
+import edu.uky.cs335final.basketball.shader.OpenGLProgram;
+import edu.uky.cs335final.basketball.shader.ShaderConstants;
 
 import java.nio.FloatBuffer;
 
