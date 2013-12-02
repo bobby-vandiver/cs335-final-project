@@ -2,7 +2,6 @@ package edu.uky.cs335final.basketball;
 
 import android.util.Log;
 import edu.uky.cs335final.basketball.geometry.Point;
-import edu.uky.cs335final.basketball.geometry.Sphere;
 import edu.uky.cs335final.basketball.util.BufferUtils;
 import edu.uky.cs335final.basketball.util.OpenGLProgram;
 
@@ -32,10 +31,12 @@ public class BasketBall {
 
     private final float [] vertices;
 
-    private final Sphere sphere;
+    private final Point scaleFactor = new Point(0.75f, 0.75f, 0.75f);
 
-    public BasketBall(Point position, float radius, OpenGLProgram program) {
-        this.sphere = new Sphere(position, radius);
+    private Point position;
+
+    public BasketBall(Point position, OpenGLProgram program) {
+        this.position = position;
         this.openGLProgram = program;
 
         final int vertexFloatCount = vertexCount * COMPONENTS_PER_POINT;
@@ -99,7 +100,7 @@ public class BasketBall {
 
         final int mvpMatrixHandle = glGetUniformLocation(program, "modelViewProjection");
 
-        final Point center = sphere.getCenter();
+        final Point center = position;
 
         Log.v(TAG, "Calculating translation matrix");
         final float translation[] = new float[16];
@@ -109,7 +110,7 @@ public class BasketBall {
         Log.v(TAG, "Calculating scale matrix");
         final float scale[] = new float[16];
         setIdentityM(scale, 0);
-        scaleM(scale, 0, 0.75f, 0.75f, 0.75f);
+        scaleM(scale, 0, scaleFactor.x, scaleFactor.y, scaleFactor.z);
 
         Log.v(TAG, "Combining translation and scale");
         final float scaleAndTranslateMatrix[] = new float[16];
