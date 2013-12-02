@@ -95,16 +95,10 @@ public class BasketBall implements Renderable {
 
     public void render(float[] viewMatrix, float[] projectionMatrix) {
         final float[] modelViewProjectionMatrix = multiply(projectionMatrix, viewMatrix);
-
-        final int program = openGLProgram.getProgram();
-        glUseProgram(program);
+        openGLProgram.useProgram();
 
         Log.v(TAG, "Binding position");
-        final int positionHandle = glGetAttribLocation(program, ShaderConstants.POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, COMPONENTS_PER_POINT, GL_FLOAT, false, vertexStride, vertexBuffer);
-
-        final int mvpMatrixHandle = glGetUniformLocation(program, ShaderConstants.MODEL_VIEW_PROJECTION);
+        final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, vertexStride, vertexBuffer);
 
         final Point center = position;
 
@@ -121,7 +115,7 @@ public class BasketBall implements Renderable {
         final float[] scaleModelViewProjectionMatrix = multiply(modelViewProjectionMatrix, scaleAndTranslateMatrix);
 
         Log.v(TAG, "Binding to model view projection handle");
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, scaleModelViewProjectionMatrix, 0);
+        openGLProgram.bindUniformMatrix(ShaderConstants.MODEL_VIEW_PROJECTION, scaleModelViewProjectionMatrix);
 
         Log.v(TAG, "Draw arrays");
         final int drawMode = wireFrame ? GL_LINES : GL_TRIANGLES;

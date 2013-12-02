@@ -1,5 +1,12 @@
 package edu.uky.cs335final.basketball.shader;
 
+import java.nio.FloatBuffer;
+
+import static android.opengl.GLES20.*;
+import static android.opengl.GLES20.glVertexAttribPointer;
+
+import static edu.uky.cs335final.basketball.geometry.Point.COMPONENTS_PER_POINT;
+
 public class OpenGLProgram {
 
     private final int program;
@@ -10,7 +17,20 @@ public class OpenGLProgram {
         this.program = ShaderUtils.linkProgram(vertexShader, fragmentShader);
     }
 
-    public int getProgram() {
-        return program;
+    public void useProgram() {
+        glUseProgram(program);
+    }
+
+    public int bindVertexAttribute(String location, int vertexStride, FloatBuffer vertexBuffer) {
+        final int handle = glGetAttribLocation(program, location);
+        glEnableVertexAttribArray(handle);
+        glVertexAttribPointer(handle, COMPONENTS_PER_POINT, GL_FLOAT, false, vertexStride, vertexBuffer);
+        return handle;
+    }
+
+    public int bindUniformMatrix(String location, float[] matrix) {
+        final int handle = glGetUniformLocation(program, location);
+        glUniformMatrix4fv(handle, 1, false, matrix, 0);
+        return handle;
     }
 }
