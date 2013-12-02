@@ -2,6 +2,7 @@ package edu.uky.cs335final.basketball;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import edu.uky.cs335final.basketball.render.BasketBallRenderer;
 
 public class BasketBallView extends GLSurfaceView {
 

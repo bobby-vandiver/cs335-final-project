@@ -2,6 +2,7 @@ package edu.uky.cs335final.basketball;
 
 import android.util.Log;
 import edu.uky.cs335final.basketball.geometry.Point;
+import edu.uky.cs335final.basketball.render.Renderable;
 import edu.uky.cs335final.basketball.util.BufferUtils;
 import edu.uky.cs335final.basketball.util.OpenGLProgram;
 
@@ -13,7 +14,7 @@ import static android.opengl.Matrix.*;
 import static edu.uky.cs335final.basketball.geometry.Point.COMPONENT_SIZE;
 import static edu.uky.cs335final.basketball.geometry.Point.COMPONENTS_PER_POINT;
 
-public class BasketBall {
+public class BasketBall implements Renderable {
 
     private static final String TAG = BasketBall.class.getCanonicalName();
 
@@ -91,7 +92,10 @@ public class BasketBall {
         }
     }
 
-    public void draw(float[] mvpMatrix) {
+    public void render(float[] viewMatrix, float[] projectionMatrix) {
+        final float[] modelViewProjectionMatrix = new float[16];
+        multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+
         final int program = openGLProgram.getProgram();
         glUseProgram(program);
 
@@ -120,7 +124,7 @@ public class BasketBall {
 
         Log.v(TAG, "Combining translation & scale with model view projection");
         final float smvpMatrix[] = new float[16];
-        multiplyMM(smvpMatrix, 0, mvpMatrix, 0, scaleAndTranslateMatrix, 0);
+        multiplyMM(smvpMatrix, 0, modelViewProjectionMatrix, 0, scaleAndTranslateMatrix, 0);
 
         Log.v(TAG, "Binding to model view projection handle");
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, smvpMatrix, 0);

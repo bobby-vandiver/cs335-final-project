@@ -1,14 +1,20 @@
-package edu.uky.cs335final.basketball;
+package edu.uky.cs335final.basketball.render;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import edu.uky.cs335final.basketball.BasketBall;
+import edu.uky.cs335final.basketball.Camera;
+import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Point;
 import edu.uky.cs335final.basketball.util.OpenGLProgram;
 import edu.uky.cs335final.basketball.util.ShaderUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static android.opengl.Matrix.*;
@@ -19,15 +25,15 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     private final float[] viewMatrix = new float[16];
     private final float[] projectionMatrix = new float[16];
-    private final float[] modelViewProjectionMatrix = new float[16];
 
     private final Context context;
 
     private Camera camera;
-    private BasketBall basketBall;
+    private List<Renderable> models;
 
     public BasketBallRenderer(Context context) {
         this.context = context;
+        this.models = new ArrayList<Renderable>();
 
         Point eye = new Point(0f, 0f, 12f);
         Point center = new Point(0f, 0f, 0f);
@@ -53,7 +59,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.fragment_shader);
 
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
-        basketBall = new BasketBall(Point.ORIGIN, program);
+        BasketBall basketBall = new BasketBall(Point.ORIGIN, program);
+
+        models.add(basketBall);
     }
 
     @Override
@@ -71,17 +79,10 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
         Log.v(TAG, "Creating view matrix");
         camera.createViewMatrix(viewMatrix);
-        calculateMatrices();
 
-        Log.v(TAG, "Drawing basketball");
-        basketBall.draw(modelViewProjectionMatrix);
-    }
-
-    private void calculateMatrices() {
-        calculateModelViewProjectionMatrix();
-    }
-
-    private void calculateModelViewProjectionMatrix() {
-        multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        Log.v(TAG, "Rendering models");
+        for(Renderable model : models) {
+            model.render(viewMatrix, projectionMatrix);
+        }
     }
 }
