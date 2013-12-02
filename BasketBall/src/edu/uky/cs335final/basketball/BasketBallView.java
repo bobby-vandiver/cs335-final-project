@@ -11,7 +11,7 @@ public class BasketBallView extends GLSurfaceView {
 
     public BasketBallView(Context context) {
         super(context);
-        this.renderer = new BasketBallRenderer();
+        this.renderer = new BasketBallRenderer(context);
 
         setEGLContextClientVersion(OPENGL_ES_VERSION);
         setRenderer(renderer);
