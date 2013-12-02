@@ -5,6 +5,7 @@ import edu.uky.cs335final.basketball.geometry.Point;
 import edu.uky.cs335final.basketball.render.Renderable;
 import edu.uky.cs335final.basketball.util.BufferUtils;
 import edu.uky.cs335final.basketball.util.OpenGLProgram;
+import edu.uky.cs335final.basketball.util.ShaderConstants;
 
 import java.nio.FloatBuffer;
 
@@ -100,11 +101,11 @@ public class BasketBall implements Renderable {
         glUseProgram(program);
 
         Log.v(TAG, "Binding position");
-        final int positionHandle = glGetAttribLocation(program, "position");
+        final int positionHandle = glGetAttribLocation(program, ShaderConstants.POSITION);
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, COMPONENTS_PER_POINT, GL_FLOAT, false, vertexStride, vertexBuffer);
 
-        final int mvpMatrixHandle = glGetUniformLocation(program, "modelViewProjection");
+        final int mvpMatrixHandle = glGetUniformLocation(program, ShaderConstants.MODEL_VIEW_PROJECTION);
 
         final Point center = position;
 
