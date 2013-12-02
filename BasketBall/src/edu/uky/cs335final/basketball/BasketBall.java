@@ -31,7 +31,9 @@ public class BasketBall {
 
     private final float [] vertices;
 
-    private final Point scaleFactor = new Point(0.75f, 0.75f, 0.75f);
+    private final Point scaleFactor = new Point(2.5f, 2.5f, 2.5f);
+
+    private final boolean wireFrame = true;
 
     private Point position;
 
@@ -124,7 +126,8 @@ public class BasketBall {
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, smvpMatrix, 0);
 
         Log.v(TAG, "Draw arrays");
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        final int drawMode = wireFrame ? GL_LINES : GL_TRIANGLES;
+        glDrawArrays(drawMode, 0, vertexCount);
 
         glDisableVertexAttribArray(positionHandle);
     }
