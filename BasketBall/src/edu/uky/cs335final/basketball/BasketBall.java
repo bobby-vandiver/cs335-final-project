@@ -10,7 +10,7 @@ import edu.uky.cs335final.basketball.shader.ShaderConstants;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static android.opengl.Matrix.*;
+import static edu.uky.cs335final.basketball.util.MatrixUtils.*;
 
 import static edu.uky.cs335final.basketball.geometry.Point.COMPONENT_SIZE;
 import static edu.uky.cs335final.basketball.geometry.Point.COMPONENTS_PER_POINT;
@@ -94,8 +94,7 @@ public class BasketBall implements Renderable {
     }
 
     public void render(float[] viewMatrix, float[] projectionMatrix) {
-        final float[] modelViewProjectionMatrix = new float[16];
-        multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        final float[] modelViewProjectionMatrix = multiply(projectionMatrix, viewMatrix);
 
         final int program = openGLProgram.getProgram();
         glUseProgram(program);
@@ -110,25 +109,19 @@ public class BasketBall implements Renderable {
         final Point center = position;
 
         Log.v(TAG, "Calculating translation matrix");
-        final float translation[] = new float[16];
-        setIdentityM(translation, 0);
-        translateM(translation, 0, center.x, center.y, center.z);
+        final float[] translation = translate(center.x, center.y, center.z);
 
         Log.v(TAG, "Calculating scale matrix");
-        final float scale[] = new float[16];
-        setIdentityM(scale, 0);
-        scaleM(scale, 0, scaleFactor.x, scaleFactor.y, scaleFactor.z);
+        final float[] scale = scale(scaleFactor.x, scaleFactor.y, scaleFactor.z);
 
         Log.v(TAG, "Combining translation and scale");
-        final float scaleAndTranslateMatrix[] = new float[16];
-        multiplyMM(scaleAndTranslateMatrix, 0, translation, 0, scale, 0);
+        final float[] scaleAndTranslateMatrix = multiply(translation, scale);
 
         Log.v(TAG, "Combining translation & scale with model view projection");
-        final float smvpMatrix[] = new float[16];
-        multiplyMM(smvpMatrix, 0, modelViewProjectionMatrix, 0, scaleAndTranslateMatrix, 0);
+        final float[] scaleModelViewProjectionMatrix = multiply(modelViewProjectionMatrix, scaleAndTranslateMatrix);
 
         Log.v(TAG, "Binding to model view projection handle");
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, smvpMatrix, 0);
+        glUniformMatrix4fv(mvpMatrixHandle, 1, false, scaleModelViewProjectionMatrix, 0);
 
         Log.v(TAG, "Draw arrays");
         final int drawMode = wireFrame ? GL_LINES : GL_TRIANGLES;
