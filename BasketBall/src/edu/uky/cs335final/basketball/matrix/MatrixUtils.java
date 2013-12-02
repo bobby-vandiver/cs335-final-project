@@ -1,4 +1,4 @@
-package edu.uky.cs335final.basketball.util;
+package edu.uky.cs335final.basketball.matrix;
 
 import static android.opengl.Matrix.*;
 
@@ -33,7 +33,7 @@ public class MatrixUtils {
             throw new IllegalArgumentException("Matrix must have length of [" + MATRIX_SIZE + "]");
     }
 
-    private static float[] newMatrix() {
+    public static float[] newMatrix() {
         float[] matrix = new float[MATRIX_SIZE];
         setIdentityM(matrix, 0);
         return matrix;
