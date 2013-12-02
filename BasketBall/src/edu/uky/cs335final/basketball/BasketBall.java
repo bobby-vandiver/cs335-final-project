@@ -33,14 +33,14 @@ public class BasketBall implements Renderable {
 
     private final float [] vertices;
 
-    private final Point scaleFactor = new Point(2.5f, 2.5f, 2.5f);
-
+    private final Point scaleFactor;
     private final boolean wireFrame = true;
 
     private Point position;
 
-    public BasketBall(Point position, OpenGLProgram program) {
+    public BasketBall(Point position, float radius, OpenGLProgram program) {
         this.position = position;
+        this.scaleFactor = new Point(radius, radius, radius);
         this.openGLProgram = program;
 
         final int vertexFloatCount = vertexCount * COMPONENTS_PER_POINT;

@@ -59,7 +59,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.fragment_shader);
 
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
-        BasketBall basketBall = new BasketBall(Point.ORIGIN, program);
+        BasketBall basketBall = new BasketBall(Point.ORIGIN, 2.5f, program);
 
         models.add(basketBall);
     }
