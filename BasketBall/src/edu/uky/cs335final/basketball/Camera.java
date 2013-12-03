@@ -18,6 +18,14 @@ public class Camera {
         this.up = up;
     }
 
+    public Vector getEye() {
+        return eye;
+    }
+
+    public Vector getCenter() {
+        return center;
+    }
+
     public void createViewMatrix(float[] viewMatrix) {
         setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
     }

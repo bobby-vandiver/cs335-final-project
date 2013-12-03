@@ -17,4 +17,8 @@ public class BasketBallView extends GLSurfaceView {
         setEGLContextClientVersion(OPENGL_ES_VERSION);
         setRenderer(renderer);
     }
+
+    public void shootBall(float power) {
+        renderer.shootBall(power);
+    }
 }

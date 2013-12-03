@@ -31,6 +31,10 @@ public class Vector {
         return "(" + x + ", " + y + ", " + z +")";
     }
 
+    public Vector normalize() {
+        return multiply(1 / magnitude());
+    }
+
     public Vector add(Vector other) {
         x += other.x;
         y += other.y;

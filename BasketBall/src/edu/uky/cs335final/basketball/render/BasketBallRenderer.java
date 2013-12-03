@@ -2,6 +2,8 @@ package edu.uky.cs335final.basketball.render;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import edu.uky.cs335final.basketball.BasketBall;
 import edu.uky.cs335final.basketball.Camera;
@@ -24,20 +26,27 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = BasketBallRenderer.class.getCanonicalName();
 
+    private static final long REFRESH_RATE_IN_MILLIS = 20;
+
     private final float[] viewMatrix = MatrixUtils.newMatrix();
     private final float[] projectionMatrix = MatrixUtils.newMatrix();
 
     private final Context context;
 
     private Camera camera;
+    private BasketBall basketBall;
+
     private List<Renderable> models;
+
+    private boolean shotInProgress;
+    private boolean replayInProgress;
 
     public BasketBallRenderer(Context context) {
         this.context = context;
         this.models = new ArrayList<Renderable>();
 
         Vector eye = new Vector(0f, 0f, 12f);
-        Vector center = new Vector(0f, 0f, 0f);
+        Vector center = new Vector(0f, 5f, 0f);
         Vector up = new Vector(0f, 1f, 0f);
 
         this.camera = new Camera(eye, center, up);
@@ -51,6 +60,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         glDepthFunc(GL_LEQUAL);
 
         createBasketBall();
+
+        shotInProgress = false;
+        replayInProgress = false;
     }
 
     private void createBasketBall() {
@@ -60,7 +72,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.fragment_shader);
 
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
-        BasketBall basketBall = new BasketBall(Vector.ORIGIN, 2.5f, program);
+
+        Vector position = new Vector(0f, 5f, 0f);
+        basketBall = new BasketBall(position, 2.5f, program);
 
         models.add(basketBall);
     }
@@ -70,7 +84,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         glViewport(0, 0, width, height);
 
         final float aspectRatio = (float) width / height;
-        frustumM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, 1, 20);
+        frustumM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, 1, 100);
     }
 
     @Override
@@ -85,5 +99,37 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         for(Renderable model : models) {
             model.render(viewMatrix, projectionMatrix);
         }
+
+        update();
+    }
+
+    private void update() {
+        if(shotInProgress) {
+            Log.d(TAG, "Updating ball");
+            basketBall.update();
+
+            // TODO: Check for collision with the floor (XZ plane)
+            if(collidesWithFloor()) {
+                Log.d(TAG, "Ball hit the floor");
+                shotInProgress = false;
+            }
+        }
+    }
+
+    private boolean collidesWithFloor() {
+        // TODO: Pass plane information into collides()
+        return basketBall.collides();
+    }
+
+    public void shootBall(float power) {
+        shotInProgress = true;
+
+        Vector initialVelocity = new Vector(camera.getCenter())
+                .subtract(camera.getEye())
+                .normalize()
+                .multiply(power);
+
+        Log.d(TAG, "initialVelocity [" + initialVelocity + "]");
+        basketBall.setInitialVelocity(initialVelocity);
     }
 }

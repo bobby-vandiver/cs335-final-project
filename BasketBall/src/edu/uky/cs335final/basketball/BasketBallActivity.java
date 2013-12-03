@@ -23,7 +23,7 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     private SensorManager sensorManager;
     private Sensor accelerometer;
 
-    private GLSurfaceView basketBallView;
+    private BasketBallView basketBallView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +69,9 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         float delta = changeInAcceleration(currentAcceleration);
         Log.v(TAG, "Delta [" + delta + "]");
 
-        if(playerShotBall(delta)) {
+        if(playerCanShootBall(delta)) {
             Log.d(TAG, "Shot detected");
+            basketBallView.shootBall(delta);
         }
     }
 
@@ -83,7 +84,7 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         return currentAcceleration.magnitude() - previousAcceleration.magnitude();
     }
 
-    private boolean playerShotBall(float delta) {
+    private boolean playerCanShootBall(float delta) {
         return delta > ACCELERATION_THRESHOLD;
     }
 

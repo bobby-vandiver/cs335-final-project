@@ -37,6 +37,13 @@ public class BasketBall implements Renderable {
     private final boolean wireFrame = true;
 
     private Vector position;
+    private Vector initialPosition;
+
+    private static final Vector GRAVITY = new Vector(0.0f, -9.81f, 0.0f);
+    private Vector initialVelocity;
+
+    private static final float TIME_DELTA = 0.01f;
+    private float time;
 
     public BasketBall(Vector position, float radius, OpenGLProgram program) {
         this.position = position;
@@ -91,6 +98,27 @@ public class BasketBall implements Renderable {
                 triIndex ++;
             }
         }
+    }
+
+    // Invoking this method indicates an intention to move the basketball in the world
+    public void setInitialVelocity(Vector initialVelocity) {
+        this.initialVelocity = initialVelocity;
+        this.initialPosition = position;
+        this.time = 0f;
+    }
+
+    public void update() {
+        time += TIME_DELTA;
+
+        Vector velocity = new Vector(initialVelocity).multiply(time);
+        Vector acceleration = new Vector(GRAVITY).multiply(time * time).multiply(0.5f);
+
+        position = new Vector(initialPosition).add(velocity).add(acceleration);
+    }
+
+    public boolean collides() {
+        // TODO: Remove hardcoded checks for XZ plane collision
+        return (position.x < 0f) || (position.y < 0f);
     }
 
     public void render(float[] viewMatrix, float[] projectionMatrix) {
