@@ -1,7 +1,7 @@
 package edu.uky.cs335final.basketball;
 
 import android.util.Log;
-import edu.uky.cs335final.basketball.geometry.Point;
+import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixBuilder;
 import edu.uky.cs335final.basketball.render.Renderable;
 import edu.uky.cs335final.basketball.util.BufferUtils;
@@ -11,10 +11,9 @@ import edu.uky.cs335final.basketball.shader.ShaderConstants;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static edu.uky.cs335final.basketball.matrix.MatrixUtils.*;
 
-import static edu.uky.cs335final.basketball.geometry.Point.COMPONENT_SIZE;
-import static edu.uky.cs335final.basketball.geometry.Point.COMPONENTS_PER_POINT;
+import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENT_SIZE;
+import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENTS_PER_POINT;
 
 public class BasketBall implements Renderable {
 
@@ -34,14 +33,14 @@ public class BasketBall implements Renderable {
 
     private final float [] vertices;
 
-    private final Point scaleFactor;
+    private final Vector scaleFactor;
     private final boolean wireFrame = true;
 
-    private Point position;
+    private Vector position;
 
-    public BasketBall(Point position, float radius, OpenGLProgram program) {
+    public BasketBall(Vector position, float radius, OpenGLProgram program) {
         this.position = position;
-        this.scaleFactor = new Point(radius, radius, radius);
+        this.scaleFactor = new Vector(radius, radius, radius);
         this.openGLProgram = program;
 
         final int vertexFloatCount = vertexCount * COMPONENTS_PER_POINT;

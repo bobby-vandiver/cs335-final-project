@@ -6,7 +6,7 @@ import android.util.Log;
 import edu.uky.cs335final.basketball.BasketBall;
 import edu.uky.cs335final.basketball.Camera;
 import edu.uky.cs335final.basketball.R;
-import edu.uky.cs335final.basketball.geometry.Point;
+import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.ShaderUtils;
 
@@ -35,9 +35,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         this.context = context;
         this.models = new ArrayList<Renderable>();
 
-        Point eye = new Point(0f, 0f, 12f);
-        Point center = new Point(0f, 0f, 0f);
-        Point up = new Point(0f, 1f, 0f);
+        Vector eye = new Vector(0f, 0f, 12f);
+        Vector center = new Vector(0f, 0f, 0f);
+        Vector up = new Vector(0f, 1f, 0f);
 
         this.camera = new Camera(eye, center, up);
     }
@@ -59,7 +59,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.fragment_shader);
 
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
-        BasketBall basketBall = new BasketBall(Point.ORIGIN, 2.5f, program);
+        BasketBall basketBall = new BasketBall(Vector.ORIGIN, 2.5f, program);
 
         models.add(basketBall);
     }

@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.*;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
-import static edu.uky.cs335final.basketball.geometry.Point.COMPONENTS_PER_POINT;
+import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENTS_PER_POINT;
 
 public class OpenGLProgram {
 

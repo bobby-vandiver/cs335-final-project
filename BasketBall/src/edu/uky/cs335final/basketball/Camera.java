@@ -1,7 +1,6 @@
 package edu.uky.cs335final.basketball;
 
-import android.util.Log;
-import edu.uky.cs335final.basketball.geometry.Point;
+import edu.uky.cs335final.basketball.geometry.Vector;
 
 import static android.opengl.Matrix.*;
 
@@ -9,11 +8,11 @@ public class Camera {
 
     private static final String TAG = Camera.class.getCanonicalName();
 
-    private Point eye;
-    private Point center;
-    private Point up;
+    private Vector eye;
+    private Vector center;
+    private Vector up;
 
-    public Camera(Point eye, Point center, Point up) {
+    public Camera(Vector eye, Vector center, Vector up) {
         this.eye = eye;
         this.center = center;
         this.up = up;
