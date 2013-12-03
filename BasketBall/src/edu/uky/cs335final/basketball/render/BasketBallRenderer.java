@@ -7,6 +7,7 @@ import edu.uky.cs335final.basketball.BasketBall;
 import edu.uky.cs335final.basketball.Camera;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
+import edu.uky.cs335final.basketball.matrix.MatrixUtils;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.ShaderUtils;
 
@@ -23,8 +24,8 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = BasketBallRenderer.class.getCanonicalName();
 
-    private final float[] viewMatrix = new float[16];
-    private final float[] projectionMatrix = new float[16];
+    private final float[] viewMatrix = MatrixUtils.newMatrix();
+    private final float[] projectionMatrix = MatrixUtils.newMatrix();
 
     private final Context context;
 
