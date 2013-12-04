@@ -42,6 +42,8 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private boolean replayInProgress;
 
     public BasketBallRenderer(Context context) {
+        Log.d(TAG, "Instantiating renderer");
+
         this.context = context;
         this.models = new ArrayList<Renderable>();
 
@@ -54,6 +56,8 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        Log.d(TAG, "Creating surface");
+
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
         glEnable(GL_DEPTH_TEST);
@@ -73,14 +77,17 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
 
-        Vector position = new Vector(0f, 5f, 0f);
-        basketBall = new BasketBall(position, 2.5f, program);
+        if(models.isEmpty()) {
+            Vector position = new Vector(0f, 5f, 0f);
+            basketBall = new BasketBall(position, 2.5f, program);
 
-        models.add(basketBall);
+            models.add(basketBall);
+        }
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.d(TAG, "Surface changed");
         glViewport(0, 0, width, height);
 
         final float aspectRatio = (float) width / height;
