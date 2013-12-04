@@ -2,8 +2,6 @@ package edu.uky.cs335final.basketball.render;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import edu.uky.cs335final.basketball.BasketBall;
 import edu.uky.cs335final.basketball.Camera;
@@ -40,6 +38,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private boolean shotFinished;
 
     private boolean replayInProgress;
+    private boolean gameOver;
 
     public BasketBallRenderer(Context context) {
         Log.d(TAG, "Instantiating renderer");
@@ -64,11 +63,6 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         glDepthFunc(GL_LEQUAL);
 
         createBasketBall();
-
-        shotInProgress = false;
-        shotFinished = false;
-
-        replayInProgress = false;
     }
 
     private void createBasketBall() {
@@ -109,23 +103,54 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
             model.render(viewMatrix, projectionMatrix);
         }
 
-        update();
+        if(shotInProgress)
+            update();
     }
 
     private void update() {
-        if(shotInProgress) {
-            Log.d(TAG, "Updating ball");
-            basketBall.update();
+        Log.d(TAG, "Updating ball");
+        basketBall.update();
 
-            // TODO: Check for collision with the floor (XZ plane)
-            if(collidesWithFloor()) {
-                Log.d(TAG, "Ball hit the floor");
-                shotInProgress = false;
-                shotFinished = true;
-
-                // TODO: Set things up for replay
-            }
+        // TODO: Check for collision with the floor (XZ plane)
+        if(collidesWithFloor()) {
+            Log.d(TAG, "Ball hit the floor");
+            setShotCompleteFlags();
+            checkForGameOver();
         }
+    }
+
+    private void setShotCompleteFlags() {
+        shotInProgress = false;
+        shotFinished = true;
+    }
+
+    private void checkForGameOver() {
+        Log.d(TAG, "Checking for game over conditions");
+
+        // TODO: Enable replay button instead of going straight to replay
+        if(replayInProgress)
+            setGameCompleteFlags();
+        else
+            startReplay();
+    }
+
+    private void setGameCompleteFlags() {
+        Log.d(TAG, "Game complete");
+        replayInProgress = false;
+        gameOver = true;
+    }
+
+    private void startReplay() {
+        Log.d(TAG, "Preparing for replay shot");
+        setReplayFlags();
+        basketBall.resetTime();
+    }
+
+    private void setReplayFlags() {
+        shotFinished = false;
+        shotInProgress = true;
+        replayInProgress = true;
+        gameOver = false;
     }
 
     private boolean collidesWithFloor() {
@@ -134,7 +159,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     }
 
     public boolean canShoot() {
-        return !shotFinished && !shotInProgress && !replayInProgress;
+        return !shotFinished && !shotInProgress && !replayInProgress && !gameOver;
     }
 
     public void shootBall(float power) {

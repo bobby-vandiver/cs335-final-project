@@ -107,6 +107,11 @@ public class BasketBall implements Renderable {
         this.time = 0f;
     }
 
+    // Used to prepare for replay using previously set initialPosition and initialVelocity
+    public void resetTime() {
+        time = 0f;
+    }
+
     public void update() {
         time += TIME_DELTA;
 
