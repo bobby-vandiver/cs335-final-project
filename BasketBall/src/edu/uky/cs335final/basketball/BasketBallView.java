@@ -19,6 +19,7 @@ public class BasketBallView extends GLSurfaceView {
     }
 
     public void shootBall(float power) {
-        renderer.shootBall(power);
+        if(renderer.canShoot())
+            renderer.shootBall(power);
     }
 }

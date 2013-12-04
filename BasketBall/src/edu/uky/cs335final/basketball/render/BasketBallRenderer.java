@@ -26,8 +26,6 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = BasketBallRenderer.class.getCanonicalName();
 
-    private static final long REFRESH_RATE_IN_MILLIS = 20;
-
     private final float[] viewMatrix = MatrixUtils.newMatrix();
     private final float[] projectionMatrix = MatrixUtils.newMatrix();
 
@@ -39,6 +37,8 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private List<Renderable> models;
 
     private boolean shotInProgress;
+    private boolean shotFinished;
+
     private boolean replayInProgress;
 
     public BasketBallRenderer(Context context) {
@@ -66,6 +66,8 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         createBasketBall();
 
         shotInProgress = false;
+        shotFinished = false;
+
         replayInProgress = false;
     }
 
@@ -119,6 +121,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
             if(collidesWithFloor()) {
                 Log.d(TAG, "Ball hit the floor");
                 shotInProgress = false;
+                shotFinished = true;
+
+                // TODO: Set things up for replay
             }
         }
     }
@@ -126,6 +131,10 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private boolean collidesWithFloor() {
         // TODO: Pass plane information into collides()
         return basketBall.collides();
+    }
+
+    public boolean canShoot() {
+        return !shotFinished && !shotInProgress && !replayInProgress;
     }
 
     public void shootBall(float power) {
