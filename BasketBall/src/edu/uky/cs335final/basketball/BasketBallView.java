@@ -2,10 +2,12 @@ package edu.uky.cs335final.basketball;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import edu.uky.cs335final.basketball.render.BasketBallRenderer;
 
 public class BasketBallView extends GLSurfaceView {
 
+    private static final String TAG = BasketBallView.class.getCanonicalName();
     private static final int OPENGL_ES_VERSION = 2;
 
     private BasketBallRenderer renderer;
@@ -18,8 +20,14 @@ public class BasketBallView extends GLSurfaceView {
         setRenderer(renderer);
     }
 
-    public void shootBall(float power) {
-        if(renderer.canShoot())
-            renderer.shootBall(power);
+    public void shootBall(final float power) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Queueing shoot event");
+                if(renderer.canShoot())
+                    renderer.shootBall(power);
+            }
+        });
     }
 }
