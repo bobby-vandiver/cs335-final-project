@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.model.Camera;
@@ -60,6 +63,7 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
     private void addHud() {
         loadHudLayout();
+        addCameraControls();
     }
 
     private void loadHudLayout() {
@@ -75,6 +79,38 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         return new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    private void addCameraControls() {
+
+        // TODO: Place holders to verify functionality of controls
+
+        addListenerToButton("look up", R.id.look_up_button);
+        addListenerToButton("look down", R.id.look_down_button);
+        addListenerToButton("look left", R.id.look_left_button);
+        addListenerToButton("look right", R.id.look_right_button);
+
+        addListenerToButton("move left", R.id.move_left_button);
+        addListenerToButton("move right", R.id.move_right_button);
+    }
+
+    private void addListenerToButton(String message, int viewId) {
+        OnClickListener listener = createClickListener(message);
+        ImageButton button = (ImageButton) findViewById(viewId);
+        button.setOnClickListener(listener);
+    }
+
+    private OnClickListener createClickListener(final String message) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayToast(message);
+            }
+        };
+    }
+
+    private void displayToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void initAccelerometer() {
