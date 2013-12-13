@@ -1,5 +1,7 @@
 package edu.uky.cs335final.basketball.render;
 
+import edu.uky.cs335final.basketball.geometry.Vector;
+
 public interface Renderable {
 
     /**
@@ -11,5 +13,5 @@ public interface Renderable {
      * @param viewMatrix
      * @param projectionMatrix
      */
-    public void render(float[] viewMatrix, float[] projectionMatrix);
+    public void render(float[] viewMatrix, float[] projectionMatrix, Vector lightPosition);
 }

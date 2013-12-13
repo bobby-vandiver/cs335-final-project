@@ -126,7 +126,7 @@ public class BasketBall implements Renderable {
         return (position.x < 0f) || (position.y < 0f);
     }
 
-    public void render(float[] viewMatrix, float[] projectionMatrix) {
+    public void render(float[] viewMatrix, float[] projectionMatrix, Vector lightPosition) {
         openGLProgram.useProgram();
 
         Log.v(TAG, "Binding position");
