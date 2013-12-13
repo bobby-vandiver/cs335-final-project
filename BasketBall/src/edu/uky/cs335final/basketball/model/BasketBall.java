@@ -46,6 +46,11 @@ public class BasketBall implements Renderable {
     private float time;
 
     public BasketBall(Vector position, float radius, OpenGLProgram program) {
+
+        Log.d(TAG, "Constructing basketball");
+        Log.d(TAG, "position [" + position + "]");
+        Log.d(TAG, "radius [" + radius + "]");
+
         this.position = position;
         this.scaleFactor = new Vector(radius, radius, radius);
         this.openGLProgram = program;
@@ -102,6 +107,7 @@ public class BasketBall implements Renderable {
 
     // Invoking this method indicates an intention to move the basketball in the world
     public void setInitialVelocity(Vector initialVelocity) {
+        Log.d(TAG, "initialVelocity [" + initialVelocity + "]");
         this.initialVelocity = initialVelocity;
         this.initialPosition = position;
         this.time = 0f;

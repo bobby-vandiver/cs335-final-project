@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
-import edu.uky.cs335final.basketball.model.Camera;
+import edu.uky.cs335final.basketball.camera.Camera;
 import edu.uky.cs335final.basketball.view.BasketBallView;
 
 public class BasketBallActivity extends Activity implements SensorEventListener {
@@ -25,13 +25,14 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     private static final float ACCELERATION_THRESHOLD = 9.0f;
     private static final float FILTER_ALPHA = 0.8f;
 
-    private static final float CAMERA_ANGLE_DISPLACEMENT = 10.0f;
-
     private Vector gravity;
     private Vector previousAcceleration;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
+
+    private static final float CAMERA_ROTATION_ANGLE = 10.0f;
+    private static final float CAMERA_DISPLACEMENT = 1.0f;
 
     private Camera camera;
 
@@ -54,11 +55,11 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     }
 
     private Camera createCamera() {
-        Vector eye = new Vector(0f, 0f, 12f);
-        Vector center = new Vector(0f, 5f, 0f);
+        Vector position = new Vector(0f, 5f, 12f);
+        Vector direction = new Vector(0f, 0f, -1f);
         Vector up = new Vector(0f, 1f, 0f);
 
-        return new Camera(eye, center, up);
+        return new Camera(position, direction, up);
     }
 
     private void addHud() {
@@ -83,34 +84,62 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
     private void addCameraControls() {
 
-        // TODO: Place holders to verify functionality of controls
+        addPitchListener(CAMERA_ROTATION_ANGLE, R.id.look_up_button);
+        addPitchListener(-CAMERA_ROTATION_ANGLE, R.id.look_down_button);
 
-        addListenerToButton("look up", R.id.look_up_button);
-        addListenerToButton("look down", R.id.look_down_button);
-        addListenerToButton("look left", R.id.look_left_button);
-        addListenerToButton("look right", R.id.look_right_button);
+        addYawListener(CAMERA_ROTATION_ANGLE, R.id.look_left_button);
+        addYawListener(-CAMERA_ROTATION_ANGLE, R.id.look_right_button);
 
-        addListenerToButton("move left", R.id.move_left_button);
-        addListenerToButton("move right", R.id.move_right_button);
+        addMoveListener(-CAMERA_DISPLACEMENT, R.id.move_left_button);
+        addMoveListener(CAMERA_DISPLACEMENT, R.id.move_right_button);
     }
 
-    private void addListenerToButton(String message, int viewId) {
-        OnClickListener listener = createClickListener(message);
+    private void addPitchListener(float angle, int viewId) {
+        OnClickListener listener = createPitchListener(angle);
+        addListenerToButton(listener, viewId);
+    }
+
+    private void addYawListener(float angle, int viewId) {
+        OnClickListener listener = createYawListener(angle);
+        addListenerToButton(listener, viewId);
+    }
+
+    private void addMoveListener(float displacement, int viewId) {
+        OnClickListener listener = createMoveListener(displacement);
+        addListenerToButton(listener, viewId);
+    }
+
+    private void addListenerToButton(OnClickListener listener, int viewId) {
         ImageButton button = (ImageButton) findViewById(viewId);
         button.setOnClickListener(listener);
     }
 
-    private OnClickListener createClickListener(final String message) {
+    private OnClickListener createYawListener(final float angle) {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayToast(message);
+                camera.updateYaw(angle);
             }
         };
     }
 
-    private void displayToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    private OnClickListener createPitchListener(final float angle) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                camera.updatePitch(angle);
+            }
+        };
+    }
+
+    private OnClickListener createMoveListener(final float offset) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Vector displacement = new Vector(offset, 0f, 0f);
+                camera.updatePosition(displacement);
+            }
+        };
     }
 
     private void initAccelerometer() {

@@ -1,5 +1,7 @@
 package edu.uky.cs335final.basketball.matrix;
 
+import edu.uky.cs335final.basketball.geometry.Vector;
+
 import static android.opengl.Matrix.*;
 
 public class MatrixUtils {
@@ -19,6 +21,12 @@ public class MatrixUtils {
         return scale;
     }
 
+    public static float[] rotate(float angle, float x, float y, float z) {
+        float[] rotate = newMatrix();
+        rotateM(rotate, 0, angle, x, y, z);
+        return rotate;
+    }
+
     public static float[] multiply(float[] leftMatrix, float[] rightMatrix) {
         throwIfInvalidSize(leftMatrix);
         throwIfInvalidSize(rightMatrix);
@@ -26,6 +34,16 @@ public class MatrixUtils {
         float[] result = newMatrix();
         multiplyMM(result, 0, leftMatrix, 0, rightMatrix, 0);
         return result;
+    }
+
+    public static Vector multiply(float[] matrix, Vector vector) {
+        throwIfInvalidSize(matrix);
+
+        float[] columnVector = vector.asColumnVector();
+        float[] result = new float[Vector.COLUMN_SIZE];
+
+        multiplyMV(result, 0, matrix, 0, columnVector, 0);
+        return new Vector(result);
     }
 
     private static void throwIfInvalidSize(float[] matrix) {

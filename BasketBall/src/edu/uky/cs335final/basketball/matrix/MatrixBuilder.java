@@ -20,6 +20,12 @@ public class MatrixBuilder {
         return this;
     }
 
+    public MatrixBuilder rotate(float angle, float x, float y, float z) {
+        final float[] rotate = MatrixUtils.rotate(angle, x, y, z);
+        matrix = MatrixUtils.multiply(rotate, matrix);
+        return this;
+    }
+
     public MatrixBuilder multiply(float[] lhs) {
         matrix = MatrixUtils.multiply(lhs, matrix);
         return this;

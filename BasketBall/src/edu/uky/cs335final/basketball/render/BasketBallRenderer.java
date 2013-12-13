@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import edu.uky.cs335final.basketball.model.BasketBall;
-import edu.uky.cs335final.basketball.model.Camera;
+import edu.uky.cs335final.basketball.camera.Camera;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixUtils;
@@ -23,6 +23,10 @@ import static android.opengl.Matrix.*;
 public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = BasketBallRenderer.class.getCanonicalName();
+
+    // The basketball's initial position is relative to the camera's position
+    private static final Vector DISPLACEMENT = new Vector(0f, -2f, -2.5f);
+    private static final float RADIUS = 1.0f;
 
     private final float[] viewMatrix = MatrixUtils.newMatrix();
     private final float[] projectionMatrix = MatrixUtils.newMatrix();
@@ -72,8 +76,10 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
 
         if(models.isEmpty()) {
-            Vector position = new Vector(0f, 5f, 0f);
-            basketBall = new BasketBall(position, 2.5f, program);
+            Vector eye = camera.getPosition();
+
+            Vector position = new Vector(eye).add(DISPLACEMENT);
+            basketBall = new BasketBall(position, RADIUS, program);
 
             models.add(basketBall);
         }
@@ -163,12 +169,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     public void shootBall(float power) {
         shotInProgress = true;
 
-        Vector initialVelocity = new Vector(camera.getCenter())
-                .subtract(camera.getEye())
-                .normalize()
-                .multiply(power);
-
-        Log.d(TAG, "initialVelocity [" + initialVelocity + "]");
+        Vector initialVelocity = new Vector(camera.getDirection()).multiply(power);
         basketBall.setInitialVelocity(initialVelocity);
     }
 }
