@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:gravity="bottom">
+    <FrameLayout
+            android:layout_width="144dp"
+            android:layout_height="134dp"
+            android:layout_alignParentLeft="true" android:layout_marginLeft="12dp" android:layout_alignParentTop="true"
+            android:layout_marginTop="150dp" android:id="@+id/frameLayout">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UP"
+                android:id="@+id/look_up_button" android:layout_gravity="center_horizontal|top"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LEFT"
+                android:id="@+id/look_left_button" android:layout_gravity="left|center_vertical"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RIGHT"
+                android:id="@+id/look_right_button" android:layout_gravity="right|center_vertical"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DOWN"
+                android:id="@+id/look_down_button" android:layout_gravity="center_horizontal|bottom"/>
+    </FrameLayout>
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@+id/frameLayout" android:layout_alignTop="@+id/frameLayout"
+            android:layout_alignBottom="@+id/frameLayout">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RIGHT"
+                android:id="@+id/move_left_button" android:layout_gravity="right|center_vertical"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LEFT"
+                android:id="@+id/move_right_button" android:layout_gravity="left|center_vertical"
+                />
+    </FrameLayout>
+</RelativeLayout>

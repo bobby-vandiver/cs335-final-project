@@ -29,4 +29,21 @@ public class Camera {
     public void createViewMatrix(float[] viewMatrix) {
         setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
     }
+
+    public void lookUp(float angle) {
+
+    }
+
+    public void lookDown(float angle) {
+
+    }
+
+    public void lookLeft(float angle) {
+
+    }
+
+    public void lookRight(float angle) {
+
+    }
+
 }

@@ -7,6 +7,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.model.Camera;
 import edu.uky.cs335final.basketball.view.BasketBallView;
@@ -18,6 +22,8 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     private static final float ACCELERATION_THRESHOLD = 9.0f;
     private static final float FILTER_ALPHA = 0.8f;
 
+    private static final float CAMERA_ANGLE_DISPLACEMENT = 10.0f;
+
     private Vector gravity;
     private Vector previousAcceleration;
 
@@ -25,7 +31,9 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     private Sensor accelerometer;
 
     private Camera camera;
+
     private BasketBallView basketBallView;
+    private View hudView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         camera = createCamera();
         basketBallView = new BasketBallView(this, camera);
         setContentView(basketBallView);
+        addHud();
     }
 
     private Camera createCamera() {
@@ -47,6 +56,25 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         Vector up = new Vector(0f, 1f, 0f);
 
         return new Camera(eye, center, up);
+    }
+
+    private void addHud() {
+        loadHudLayout();
+    }
+
+    private void loadHudLayout() {
+
+        LayoutInflater inflater = getLayoutInflater();
+        hudView = inflater.inflate(R.layout.hud, null);
+
+        ViewGroup.LayoutParams params = getLayoutParams();
+        addContentView(hudView, params);
+    }
+
+    private ViewGroup.LayoutParams getLayoutParams() {
+        return new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private void initAccelerometer() {
