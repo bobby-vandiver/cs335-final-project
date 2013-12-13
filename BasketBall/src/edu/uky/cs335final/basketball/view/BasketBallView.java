@@ -1,9 +1,9 @@
-package edu.uky.cs335final.basketball;
+package edu.uky.cs335final.basketball.view;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import edu.uky.cs335final.basketball.geometry.Vector;
+import edu.uky.cs335final.basketball.model.Camera;
 import edu.uky.cs335final.basketball.render.BasketBallRenderer;
 
 public class BasketBallView extends GLSurfaceView {

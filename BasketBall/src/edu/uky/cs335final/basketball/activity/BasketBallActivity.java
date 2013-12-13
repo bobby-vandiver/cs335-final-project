@@ -1,14 +1,15 @@
-package edu.uky.cs335final.basketball;
+package edu.uky.cs335final.basketball.activity;
 
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import edu.uky.cs335final.basketball.geometry.Vector;
+import edu.uky.cs335final.basketball.model.Camera;
+import edu.uky.cs335final.basketball.view.BasketBallView;
 
 public class BasketBallActivity extends Activity implements SensorEventListener {
 

@@ -1,4 +1,4 @@
-package edu.uky.cs335final.basketball;
+package edu.uky.cs335final.basketball.model;
 
 import android.util.Log;
 import edu.uky.cs335final.basketball.geometry.Vector;
