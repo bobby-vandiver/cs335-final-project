@@ -30,15 +30,14 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initView();
+        initAccelerometer();
+    }
+
+    private void initView() {
         camera = createCamera();
         basketBallView = new BasketBallView(this, camera);
         setContentView(basketBallView);
-
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-        gravity = new Vector();
-        previousAcceleration = new Vector();
     }
 
     private Camera createCamera() {
@@ -47,6 +46,14 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         Vector up = new Vector(0f, 1f, 0f);
 
         return new Camera(eye, center, up);
+    }
+
+    private void initAccelerometer() {
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        gravity = new Vector();
+        previousAcceleration = new Vector();
     }
 
     @Override
