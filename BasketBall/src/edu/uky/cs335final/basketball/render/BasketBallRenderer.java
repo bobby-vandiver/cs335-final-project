@@ -40,17 +40,12 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private boolean replayInProgress;
     private boolean gameOver;
 
-    public BasketBallRenderer(Context context) {
+    public BasketBallRenderer(Context context, Camera camera) {
         Log.d(TAG, "Instantiating renderer");
 
         this.context = context;
         this.models = new ArrayList<Renderable>();
-
-        Vector eye = new Vector(0f, 0f, 12f);
-        Vector center = new Vector(0f, 5f, 0f);
-        Vector up = new Vector(0f, 1f, 0f);
-
-        this.camera = new Camera(eye, center, up);
+        this.camera = camera;
     }
 
     @Override
