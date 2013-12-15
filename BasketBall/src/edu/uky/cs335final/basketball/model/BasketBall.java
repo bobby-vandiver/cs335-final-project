@@ -10,6 +10,7 @@ import edu.uky.cs335final.basketball.shader.ShaderConstants;
 
 import java.nio.FloatBuffer;
 
+import static android.util.FloatMath.*;
 import static android.opengl.GLES20.*;
 
 import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENT_SIZE;
@@ -66,43 +67,57 @@ public class BasketBall implements Renderable {
     }
 
     // TODO: Clean this mess up
-    private void createModel(int lats, int longs) {
-        int triIndex = 0;
-        for(int i = 0; i < lats; i++) {
-            double lat0 = Math.PI * (-0.5 + (double) (i) / lats);
-            double z0  = Math.sin(lat0);
-            double zr0 =  Math.cos(lat0);
+    private void createModel(int stacks, int slices) {
 
-            double lat1 = Math.PI * (-0.5 + (double) (i+1) / lats);
-            double z1 = Math.sin(lat1);
-            double zr1 = Math.cos(lat1);
+        int vertexIndex = 0;
 
+        for(int i = 0; i < stacks; i++) {
 
-            //glBegin(GL_QUAD_STRIP);
-            for(int j = 0; j < longs; j++) {
-                double lng = 2 * Math.PI * (double) (j - 1) / longs;
-                double x = Math.cos(lng);
-                double y = Math.sin(lng);
+            float theta_0 = (float) (Math.PI * (-0.5 + (float) (i) / stacks));
+            float sinTheta_0  = sin(theta_0);
+            float cosTheta_0 =  cos(theta_0);
 
-                lng = 2 * Math.PI * (double) (j) / longs;
-                double x1 = Math.cos(lng);
-                double y1 = Math.sin(lng);
+            float theta_1 = (float)((Math.PI * (-0.5 + (float) (i+1) / stacks)));
+            float sinTheta_1 = sin(theta_1);
+            float cosTheta_1 = cos(theta_1);
+
+            for(int j = 0; j < slices; j++) {
+                float phi_0 = (float)(2 * Math.PI * (float) (j - 1) / slices);
+
+                float cosPhi_0 = cos(phi_0);
+                float sinPhi_0 = sin(phi_0);
+
+                float phi_1 = (float)(2 * Math.PI * (float) (j) / slices);
+                float cosPhi_1 = cos(phi_1);
+                float sinPhi_1 = sin(phi_1);
 
                 // the first triangle
-                vertices[triIndex*9 ] = (float)(x * zr0);    vertices[triIndex*9 + 1 ] = (float)(y * zr0);   vertices[triIndex*9 + 2 ] = (float) z0;
-                vertices[triIndex*9 + 3 ] = (float)(x * zr1);    vertices[triIndex*9 + 4 ] = (float)(y * zr1);   vertices[triIndex*9 + 5 ] = (float) z1;
-                vertices[triIndex*9 + 6 ] = (float)(x1 * zr0);   vertices[triIndex*9 + 7 ] = (float)(y1 * zr0);  vertices[triIndex*9 + 8 ] = (float) z0;
+                int idx = vertexIndex * 9;
 
-                triIndex ++;
-                vertices[triIndex*9] = (float)(x1 * zr0);   vertices[triIndex*9 + 1 ] = (float)(y1 * zr0);  	vertices[triIndex*9 + 2 ] = (float) z0;
-                vertices[triIndex*9 + 3 ] = (float)(x * zr1);    vertices[triIndex*9 + 4 ] = (float)(y * zr1);   	vertices[triIndex*9 + 5 ] = (float) z1;
-                vertices[triIndex*9 + 6 ] = (float)(x1 * zr1);    vertices[triIndex*9 + 7 ] = (float)(y1 * zr1); 	vertices[triIndex*9 + 8 ] = (float) z1;
+                writeVertex(idx, cosPhi_0 * cosTheta_0, sinPhi_0 * cosTheta_0,  sinTheta_0);
+                writeVertex(idx + 3, cosPhi_0 * cosTheta_1, sinPhi_0 * cosTheta_1,  sinTheta_1);
+                writeVertex(idx + 6, cosPhi_1 * cosTheta_0, sinPhi_1 * cosTheta_0,  sinTheta_0);
+
+                vertexIndex ++;
+
+                // the second triangle
+                idx = vertexIndex * 9;
+
+                writeVertex(idx, cosPhi_1 * cosTheta_0, sinPhi_1 * cosTheta_0,  sinTheta_0);
+                writeVertex(idx + 3, cosPhi_0 * cosTheta_1, sinPhi_0 * cosTheta_1,  sinTheta_1);
+                writeVertex(idx + 6, cosPhi_1 * cosTheta_1, sinPhi_1 * cosTheta_1, sinTheta_1);
 
                 // in this case, the normal is the same as the vertex, plus the normalization;
 //                for (int kk = -9; kk<9 ; kk++) normals[triIndex*9 + kk] = vertices[triIndex*9+kk];
-                triIndex ++;
+                vertexIndex ++;
             }
         }
+    }
+
+    private void writeVertex(int position, float x, float y, float z) {
+        vertices[position++] = x;
+        vertices[position++] = y;
+        vertices[position] = z;
     }
 
     // Invoking this method indicates an intention to move the basketball in the world
