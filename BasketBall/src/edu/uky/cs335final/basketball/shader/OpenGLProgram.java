@@ -33,4 +33,16 @@ public class OpenGLProgram {
         glUniformMatrix4fv(handle, 1, false, matrix, 0);
         return handle;
     }
+
+    public int bindTexture2D(String location, final int textureUnitId, final int textureId) {
+        final int handle = glGetUniformLocation(program, location);
+
+        glActiveTexture(textureUnitId);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+
+        int normalizedUnitId = (textureUnitId - GL_TEXTURE0);
+        glUniform1i(handle, normalizedUnitId);
+
+        return handle;
+    }
 }
