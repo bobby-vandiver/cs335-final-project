@@ -32,7 +32,8 @@ public class BasketBall implements Renderable {
     private static final int HORIZONTAL_SLICES = 20;
     private static final int VERTICAL_SLICES = 40;
 
-    private final float [] vertices;
+    private final float[] vertices;
+    private final float[] normals;
 
     private final Vector scaleFactor;
     private final boolean wireFrame = true;
@@ -60,6 +61,7 @@ public class BasketBall implements Renderable {
 
         Log.d(TAG, "Creating vertex arrays");
         this.vertices = new float[vertexFloatCount];
+        this.normals = new float[vertexFloatCount];
         createModel(HORIZONTAL_SLICES, VERTICAL_SLICES);
 
         Log.d(TAG, "Creating vertex buffer");
@@ -108,7 +110,11 @@ public class BasketBall implements Renderable {
                 writeVertex(idx + 6, cosPhi_1 * cosTheta_1, sinPhi_1 * cosTheta_1, sinTheta_1);
 
                 // in this case, the normal is the same as the vertex, plus the normalization;
-//                for (int kk = -9; kk<9 ; kk++) normals[triIndex*9 + kk] = vertices[triIndex*9+kk];
+                for (int k = -9; k < 9 ; k++) {
+                    int m = vertexIndex * 9 + k;
+                    normals[m] = vertices[m];
+                }
+
                 vertexIndex ++;
             }
         }
