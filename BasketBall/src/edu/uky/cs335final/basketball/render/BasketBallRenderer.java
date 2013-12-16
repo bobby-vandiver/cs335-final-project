@@ -81,7 +81,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
             Vector position = new Vector(eye).add(DISPLACEMENT);
 
             int texture = TextureUtils.loadTexture(context, R.drawable.basketball_texture);
-            basketBall = new BasketBall(position, RADIUS, program, texture);
+            int bumpMap = TextureUtils.loadTexture(context, R.drawable.basketball_bump_map);
+
+            basketBall = new BasketBall(position, RADIUS, program, texture, bumpMap);
 
             models.add(basketBall);
         }

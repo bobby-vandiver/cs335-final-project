@@ -1,7 +1,7 @@
 precision mediump float;
 
 uniform sampler2D textureUnit;
-uniform vec4 color;
+uniform sampler2D bumpMapUnit;
 
 varying vec2 interpolatedTextureCoordinates;
 

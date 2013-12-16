@@ -9,4 +9,6 @@ public class ShaderConstants {
 
     public static final String TEXTURE_UNIT = "textureUnit";
     public static final String TEXTURE_COORDINATES = "textureCoordinates";
+
+    public static final String BUMP_MAP_UNIT = "bumpMapUnit";
 }
