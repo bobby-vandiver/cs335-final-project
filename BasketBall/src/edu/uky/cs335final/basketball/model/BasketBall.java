@@ -88,6 +88,9 @@ public class BasketBall implements Renderable {
         Log.d(TAG, "Creating vertex buffer");
         this.vertexBuffer = BufferUtils.createBuffer(vertices);
 
+        Log.d(TAG, "Creating normal buffer");
+        this.normalBuffer = BufferUtils.createBuffer(normals);
+
         Log.d(TAG, "Creating texture coordinates buffer");
         this.textureCoordinatesBuffer = BufferUtils.createBuffer(textureCoordinates);
     }
@@ -198,6 +201,12 @@ public class BasketBall implements Renderable {
     public void render(float[] viewMatrix, float[] projectionMatrix, Vector lightPosition) {
         openGLProgram.useProgram();
 
+        Log.v(TAG, "Binding light position");
+        openGLProgram.bindUniformVector(ShaderConstants.LIGHT_POSITION, lightPosition.asVec3());
+
+        Log.v(TAG, "Binding normals");
+        final int normalHandle = openGLProgram.bindVertexAttribute(ShaderConstants.NORMAL, COMPONENTS_PER_POINT, vertexStride, normalBuffer);
+
         Log.v(TAG, "Binding position");
         final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, COMPONENTS_PER_POINT, vertexStride, vertexBuffer);
 
@@ -221,12 +230,17 @@ public class BasketBall implements Renderable {
                 .multiply(projectionMatrix)
                 .build();
 
+        Log.v(TAG, "Binding model view projection");
         openGLProgram.bindUniformMatrix(ShaderConstants.MODEL_VIEW_PROJECTION, modelViewProjectionMatrix);
+
+        Log.v(TAG, "Binding model view");
+        openGLProgram.bindUniformMatrix(ShaderConstants.MODEL_VIEW, modelViewMatrix);
 
         Log.v(TAG, "Draw arrays");
         final int drawMode = wireFrame ? GL_LINES : GL_TRIANGLES;
         glDrawArrays(drawMode, 0, vertexCount);
 
         glDisableVertexAttribArray(positionHandle);
+        glDisableVertexAttribArray(normalHandle);
     }
 }

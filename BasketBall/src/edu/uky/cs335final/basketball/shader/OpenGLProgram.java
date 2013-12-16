@@ -32,6 +32,12 @@ public class OpenGLProgram {
         return handle;
     }
 
+    public int bindUniformVector(String location, float[] vector) {
+        final int handle = glGetUniformLocation(program, location);
+        glUniform3fv(handle, 1, vector, 0);
+        return handle;
+    }
+
     public int bindTexture2D(String location, final int textureUnitId, final int textureId) {
         final int handle = glGetUniformLocation(program, location);
 

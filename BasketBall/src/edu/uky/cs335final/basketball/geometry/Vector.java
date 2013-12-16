@@ -6,9 +6,8 @@ public class Vector {
     public static final int COMPONENT_SIZE = 4;
     public static final int COMPONENTS_PER_POINT = 3;
 
-    public static final int COLUMN_SIZE = 4;
-
-    public static Vector ORIGIN = new Vector(0f, 0f, 0f);
+    public static final int VEC3_SIZE = 3;
+    public static final int VEC4_SIZE = 4;
 
     public float x;
     public float y;
@@ -33,7 +32,7 @@ public class Vector {
     }
 
     private void throwIfInvalidColumnVector(float[] column) {
-        if(column.length != COLUMN_SIZE)
+        if(column.length != VEC4_SIZE)
             throw new IllegalArgumentException("Column vector must contain 4 elements");
     }
 
@@ -46,12 +45,20 @@ public class Vector {
         return "(" + x + ", " + y + ", " + z +")";
     }
 
-    public float[] asColumnVector() {
-        float[] column = new float[COLUMN_SIZE];
+    public float[] asVec4() {
+        float[] column = new float[VEC4_SIZE];
         column[0] = x;
         column[1] = y;
         column[2] = z;
         column[3] = 1.0f;
+        return column;
+    }
+
+    public float[] asVec3() {
+        float[] column = new float[VEC3_SIZE];
+        column[0] = x;
+        column[1] = y;
+        column[2] = z;
         return column;
     }
 

@@ -50,7 +50,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, "Instantiating renderer");
 
         this.context = context;
-        this.lightPosition = Vector.ORIGIN;
+        this.lightPosition = new Vector(0f, 10f, 15f);
 
         this.models = new ArrayList<Renderable>();
         this.camera = camera;

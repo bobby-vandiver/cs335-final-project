@@ -39,8 +39,8 @@ public class MatrixUtils {
     public static Vector multiply(float[] matrix, Vector vector) {
         throwIfInvalidSize(matrix);
 
-        float[] columnVector = vector.asColumnVector();
-        float[] result = new float[Vector.COLUMN_SIZE];
+        float[] columnVector = vector.asVec4();
+        float[] result = new float[Vector.VEC4_SIZE];
 
         multiplyMV(result, 0, matrix, 0, columnVector, 0);
         return new Vector(result);
