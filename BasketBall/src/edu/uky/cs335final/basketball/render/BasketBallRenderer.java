@@ -10,6 +10,7 @@ import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixUtils;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.ShaderUtils;
+import edu.uky.cs335final.basketball.shader.TextureUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -70,16 +71,17 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private void createBasketBall() {
         Log.d(TAG, "Creating basketball");
 
-        String vertexShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.vertex_shader);
-        String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.fragment_shader);
+        String vertexShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.texture_vertex_shader);
+        String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.texture_fragment_shader);
 
         OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
 
         if(models.isEmpty()) {
             Vector eye = camera.getPosition();
-
             Vector position = new Vector(eye).add(DISPLACEMENT);
-            basketBall = new BasketBall(position, RADIUS, program);
+
+            int texture = TextureUtils.loadTexture(context, R.drawable.basketball_texture);
+            basketBall = new BasketBall(position, RADIUS, program, texture);
 
             models.add(basketBall);
         }

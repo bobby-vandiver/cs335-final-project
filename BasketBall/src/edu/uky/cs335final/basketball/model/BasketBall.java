@@ -23,6 +23,12 @@ public class BasketBall implements Renderable {
     private final OpenGLProgram openGLProgram;
 
     private FloatBuffer vertexBuffer;
+    private FloatBuffer normalBuffer;
+
+    private FloatBuffer textureCoordinatesBuffer;
+
+    private final static int COMPONENTS_PER_TEXTURE_COORDINATE = 2;
+    private final int textureStride = COMPONENTS_PER_TEXTURE_COORDINATE * COMPONENT_SIZE;
 
     private final int vertexCount = VERTICAL_SLICES * HORIZONTAL_SLICES * VERTICES_PER_SQUARE;
     private final int vertexStride = COMPONENTS_PER_POINT * COMPONENT_SIZE;
@@ -35,8 +41,10 @@ public class BasketBall implements Renderable {
     private final float[] vertices;
     private final float[] normals;
 
+    private final float[] textureCoordinates;
+
     private final Vector scaleFactor;
-    private final boolean wireFrame = true;
+    private final boolean wireFrame = false;
 
     private Vector position;
     private Vector initialPosition;
@@ -47,7 +55,9 @@ public class BasketBall implements Renderable {
     private static final float TIME_DELTA = 0.01f;
     private float time;
 
-    public BasketBall(Vector position, float radius, OpenGLProgram program) {
+    private final int texture;
+
+    public BasketBall(Vector position, float radius, OpenGLProgram program, int texture) {
 
         Log.d(TAG, "Constructing basketball");
         Log.d(TAG, "position [" + position + "]");
@@ -56,16 +66,24 @@ public class BasketBall implements Renderable {
         this.position = position;
         this.scaleFactor = new Vector(radius, radius, radius);
         this.openGLProgram = program;
+        this.texture = texture;
 
         final int vertexFloatCount = vertexCount * COMPONENTS_PER_POINT;
 
         Log.d(TAG, "Creating vertex arrays");
         this.vertices = new float[vertexFloatCount];
         this.normals = new float[vertexFloatCount];
+
+        final int textureCoordinateFloatCount = vertexCount * COMPONENTS_PER_TEXTURE_COORDINATE;
+        this.textureCoordinates = new float[textureCoordinateFloatCount];
+
         createModel(HORIZONTAL_SLICES, VERTICAL_SLICES);
 
         Log.d(TAG, "Creating vertex buffer");
         this.vertexBuffer = BufferUtils.createBuffer(vertices);
+
+        Log.d(TAG, "Creating texture coordinates buffer");
+        this.textureCoordinatesBuffer = BufferUtils.createBuffer(textureCoordinates);
     }
 
     // TODO: Clean this mess up
@@ -95,19 +113,32 @@ public class BasketBall implements Renderable {
 
                 // the first triangle
                 int idx = vertexIndex * 9;
+                int textureIdx = vertexIndex * 6;
 
                 writeVertex(idx, cosPhi_0 * cosTheta_0, sinPhi_0 * cosTheta_0,  sinTheta_0);
-                writeVertex(idx + 3, cosPhi_0 * cosTheta_1, sinPhi_0 * cosTheta_1,  sinTheta_1);
-                writeVertex(idx + 6, cosPhi_1 * cosTheta_0, sinPhi_1 * cosTheta_0,  sinTheta_0);
+                writeTextureCoordinate(textureIdx, 0, 1);
 
-                vertexIndex ++;
+                writeVertex(idx + 3, cosPhi_0 * cosTheta_1, sinPhi_0 * cosTheta_1,  sinTheta_1);
+                writeTextureCoordinate(textureIdx + 2, 0, 0);
+
+                writeVertex(idx + 6, cosPhi_1 * cosTheta_0, sinPhi_1 * cosTheta_0,  sinTheta_0);
+                writeTextureCoordinate(textureIdx + 4, 1, 0);
+
+                vertexIndex++;
+                textureIdx++;
 
                 // the second triangle
                 idx = vertexIndex * 9;
+                textureIdx = vertexIndex * 6;
 
                 writeVertex(idx, cosPhi_1 * cosTheta_0, sinPhi_1 * cosTheta_0,  sinTheta_0);
+                writeTextureCoordinate(textureIdx, 1, 1);
+
                 writeVertex(idx + 3, cosPhi_0 * cosTheta_1, sinPhi_0 * cosTheta_1,  sinTheta_1);
+                writeTextureCoordinate(textureIdx + 2, 0, 1);
+
                 writeVertex(idx + 6, cosPhi_1 * cosTheta_1, sinPhi_1 * cosTheta_1, sinTheta_1);
+                writeTextureCoordinate(textureIdx + 4, 1, 0);
 
                 // in this case, the normal is the same as the vertex, plus the normalization;
                 for (int k = -9; k < 9 ; k++) {
@@ -124,6 +155,11 @@ public class BasketBall implements Renderable {
         vertices[position++] = x;
         vertices[position++] = y;
         vertices[position] = z;
+    }
+
+    private void writeTextureCoordinate(int position, float s, float t) {
+        textureCoordinates[position++] = s;
+        textureCoordinates[position] = t;
     }
 
     // Invoking this method indicates an intention to move the basketball in the world
@@ -158,6 +194,12 @@ public class BasketBall implements Renderable {
 
         Log.v(TAG, "Binding position");
         final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, COMPONENTS_PER_POINT, vertexStride, vertexBuffer);
+
+        Log.v(TAG, "Binding texture coordinates");
+        openGLProgram.bindVertexAttribute(ShaderConstants.TEXTURE_COORDINATES, COMPONENTS_PER_TEXTURE_COORDINATE, textureStride, textureCoordinatesBuffer);
+
+        Log.v(TAG, "Binding texture");
+        openGLProgram.bindTexture2D(ShaderConstants.TEXTURE_UNIT, GL_TEXTURE0, texture);
 
         final float[] modelViewMatrix = new MatrixBuilder()
                 .scale(scaleFactor.x, scaleFactor.y, scaleFactor.z)
