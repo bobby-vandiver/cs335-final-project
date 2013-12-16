@@ -157,7 +157,7 @@ public class BasketBall implements Renderable {
         openGLProgram.useProgram();
 
         Log.v(TAG, "Binding position");
-        final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, vertexStride, vertexBuffer);
+        final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, COMPONENTS_PER_POINT, vertexStride, vertexBuffer);
 
         final float[] modelViewMatrix = new MatrixBuilder()
                 .scale(scaleFactor.x, scaleFactor.y, scaleFactor.z)
