@@ -6,16 +6,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.camera.Camera;
+import edu.uky.cs335final.basketball.render.BasketBallRenderer;
+import edu.uky.cs335final.basketball.render.BasketBallRenderer.ReplayListener;
+import edu.uky.cs335final.basketball.render.BasketBallRenderer.ShotListener;
 import edu.uky.cs335final.basketball.view.BasketBallView;
 
 public class BasketBallActivity extends Activity implements SensorEventListener {
@@ -37,11 +42,21 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     private Camera camera;
 
     private BasketBallView basketBallView;
+    private BasketBallRenderer basketBallRenderer;
+
     private View hudView;
+
+    private Handler handler;
+
+    private static final float[] speedFactors = { 1.0f, 0.25f, 0.1f };
+    private int speedFactorSelector = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Retain handle for inter-thread communication
+        handler = new Handler(Looper.getMainLooper());
 
         initView();
         initAccelerometer();
@@ -49,8 +64,11 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
     private void initView() {
         camera = createCamera();
-        basketBallView = new BasketBallView(this, camera);
+        basketBallRenderer = createRenderer();
+
+        basketBallView = new BasketBallView(this, basketBallRenderer);
         setContentView(basketBallView);
+
         addHud();
     }
 
@@ -60,6 +78,136 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         Vector up = new Vector(0f, 1f, 0f);
 
         return new Camera(position, direction, up);
+    }
+
+    private BasketBallRenderer createRenderer() {
+        BasketBallRenderer renderer = new BasketBallRenderer(this, camera);
+
+        ShotListener shotListener = createShotListener();
+        renderer.setShotListener(shotListener);
+
+        ReplayListener replayListener = createReplayListener();
+        renderer.setReplayListener(replayListener);
+
+        return renderer;
+    }
+
+    private ShotListener createShotListener() {
+        return new ShotListener() {
+            @Override
+            public void onComplete() {
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        enableReplayButton();
+                        enableSpeedButton();
+                    }
+                });
+            }
+
+            private void enableReplayButton() {
+                Button replayButton = (Button) findViewById(R.id.replay_button);
+                replayButton.setVisibility(View.VISIBLE);
+
+                replayButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        // Cannot restart a replay once it has started
+                        if (basketBallRenderer.isReplayInProgress())
+                            return;
+
+                        basketBallRenderer.startReplay();
+                    }
+                });
+            }
+
+            private void enableSpeedButton() {
+                Button speedButton = (Button) findViewById(R.id.speed_button);
+                speedButton.setVisibility(View.VISIBLE);
+
+                // Display default speed
+                setSpeedButtonText(speedButton);
+                setUpdateSpeed();
+
+                OnClickListener listener = createSpeedButtonListener();
+                speedButton.setOnClickListener(listener);
+            }
+
+            private OnClickListener createSpeedButtonListener() {
+                return new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        // Don't allow the button to change after the
+                        // game is over for consistency with replay functionality
+                        if(basketBallRenderer.isGameOver())
+                            return;
+
+                        // Select the next speed
+                        speedFactorSelector++;
+
+                        // Ensure we always have a valid index
+                        speedFactorSelector %= speedFactors.length;
+
+                        setUpdateSpeed();
+
+                        // Change the text on the button
+                        Button speedButton = (Button) v;
+                        setSpeedButtonText(speedButton);
+                    }
+                };
+            }
+
+            private void setUpdateSpeed() {
+                float factor = speedFactors[speedFactorSelector];
+                basketBallRenderer.changeBallUpdateSpeed(factor);
+            }
+
+            private void setSpeedButtonText(Button speedButton) {
+                float factor = speedFactors[speedFactorSelector];
+                String text = Float.toString(factor);
+                speedButton.setText(text);
+            }
+
+            @Override
+            public void onSuccess() {
+            }
+
+            @Override
+            public void onFailure() {
+            }
+        };
+    }
+
+    private ReplayListener createReplayListener() {
+        return new ReplayListener() {
+            @Override
+            public void onStart() {
+                Log.d(TAG, "onStart");
+            }
+
+            @Override
+            public void onStop() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "Disabling replay button");
+                        disableButton(R.id.replay_button);
+
+                        Log.d(TAG, "Disabling speed button");
+                        disableButton(R.id.speed_button);
+                    }
+                });
+            }
+
+            private void disableButton(int viewId) {
+                Button button = (Button) findViewById(viewId);
+                button.setOnClickListener(null);
+                button.setEnabled(false);
+            }
+        };
     }
 
     private void addHud() {

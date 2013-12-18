@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">BasketBall</string>
 
+    <string name="replay">Replay</string>
+    <string name="speed">Speed</string>
+
     <string name="up">UP</string>
     <string name="down">DOWN</string>
     <string name="left">LEFT</string>

@@ -23,6 +23,34 @@ import static android.opengl.Matrix.*;
 
 public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
+    // Define listener to allow other components to perform specific operations
+    // at different points in the lifecycle of the shot
+    public static interface ShotListener {
+
+        // This is executed when a shot is first completed regardless of
+        // whether it was successful or not. This does NOT get executed at
+        // the end of a replay.
+
+        public void onComplete();
+
+        // This is executed when a shot successfully enters the hoop.
+        public void onSuccess();
+
+        // This is executed when a shot misses the hoop.
+        public void onFailure();
+    }
+
+    // Define listener to allow other components to perform specific operations
+    // at different points of a replay event
+    public static interface ReplayListener {
+
+        // This is executed when a replay is first started
+        public void onStart();
+
+        // This is executed when the replay is finished
+        public void onStop();
+    }
+
     private static final String TAG = BasketBallRenderer.class.getCanonicalName();
 
     // The basketball's initial position is relative to the camera's position
@@ -46,6 +74,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private boolean replayInProgress;
     private boolean gameOver;
 
+    private ShotListener shotListener;
+    private ReplayListener replayListener;
+
     public BasketBallRenderer(Context context, Camera camera) {
         Log.d(TAG, "Instantiating renderer");
 
@@ -54,6 +85,22 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
         this.models = new ArrayList<Renderable>();
         this.camera = camera;
+    }
+
+    public boolean isReplayInProgress() {
+        return replayInProgress;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setShotListener(ShotListener shotListener) {
+        this.shotListener = shotListener;
+    }
+
+    public void setReplayListener(ReplayListener replayListener) {
+        this.replayListener = replayListener;
     }
 
     @Override
@@ -135,11 +182,23 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private void checkForGameOver() {
         Log.d(TAG, "Checking for game over conditions");
 
-        // TODO: Enable replay button instead of going straight to replay
-        if(replayInProgress)
+        if(replayInProgress) {
+            stopReplayListener();
             setGameCompleteFlags();
-        else
-            startReplay();
+        }
+        else {
+            completeShotListener();
+        }
+    }
+
+    private void stopReplayListener() {
+        if(replayListener != null)
+            replayListener.onStop();
+    }
+
+    private void completeShotListener() {
+        if(shotListener != null)
+            shotListener.onComplete();
     }
 
     private void setGameCompleteFlags() {
@@ -148,10 +207,12 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         gameOver = true;
     }
 
-    private void startReplay() {
-        Log.d(TAG, "Preparing for replay shot");
-        setReplayFlags();
-        basketBall.resetTime();
+    public void startReplay() {
+        if(!gameOver) {
+            Log.d(TAG, "Preparing for replay shot");
+            setReplayFlags();
+            basketBall.resetTime();
+        }
     }
 
     private void setReplayFlags() {
@@ -170,10 +231,14 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         return !shotFinished && !shotInProgress && !replayInProgress && !gameOver;
     }
 
-    public void shootBall(float power) {
+    public void shootBall(float speed) {
         shotInProgress = true;
 
-        Vector initialVelocity = new Vector(camera.getDirection()).multiply(power);
-        basketBall.setInitialVelocity(initialVelocity);
+        Vector direction = new Vector(camera.getDirection());
+        basketBall.setDirection(direction, speed);
+    }
+
+    public void changeBallUpdateSpeed(float factor) {
+        basketBall.changeTimeFactor(factor);
     }
 }

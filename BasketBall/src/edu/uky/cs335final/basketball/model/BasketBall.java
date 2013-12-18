@@ -50,10 +50,15 @@ public class BasketBall implements Renderable {
     private Vector initialPosition;
 
     private static final Vector GRAVITY = new Vector(0.0f, -9.81f, 0.0f);
-    private Vector initialVelocity;
+
+    private Vector direction;
+    private float speed;
 
     private static final float TIME_DELTA = 0.01f;
+    private static final float DEFAULT_TIME_FACTOR = 1.0f;
+
     private float time;
+    private float timeFactor = DEFAULT_TIME_FACTOR;
 
     private final int texture;
     private final int bumpMap;
@@ -172,22 +177,30 @@ public class BasketBall implements Renderable {
     }
 
     // Invoking this method indicates an intention to move the basketball in the world
-    public void setInitialVelocity(Vector initialVelocity) {
-        Log.d(TAG, "initialVelocity [" + initialVelocity + "]");
-        this.initialVelocity = initialVelocity;
+    public void setDirection(Vector direction, float speed) {
+        Log.d(TAG, "direction [" + direction + "]");
+        Log.d(TAG, "speed [" + speed + "]");
+
+        this.direction = direction;
+        this.speed = speed;
+
         this.initialPosition = position;
         this.time = 0f;
     }
 
-    // Used to prepare for replay using previously set initialPosition and initialVelocity
+    // Used to prepare for replay using previously set initialPosition and direction
     public void resetTime() {
         time = 0f;
     }
 
-    public void update() {
-        time += TIME_DELTA;
+    public void changeTimeFactor(float factor) {
+        timeFactor = factor;
+    }
 
-        Vector velocity = new Vector(initialVelocity).multiply(time);
+    public void update() {
+        time += (TIME_DELTA * timeFactor);
+
+        Vector velocity = new Vector(direction).multiply(speed).multiply(time);
         Vector acceleration = new Vector(GRAVITY).multiply(time * time).multiply(0.5f);
 
         position = new Vector(initialPosition).add(velocity).add(acceleration);

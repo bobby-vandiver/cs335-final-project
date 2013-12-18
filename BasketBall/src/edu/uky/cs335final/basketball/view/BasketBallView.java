@@ -3,7 +3,6 @@ package edu.uky.cs335final.basketball.view;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import edu.uky.cs335final.basketball.camera.Camera;
 import edu.uky.cs335final.basketball.render.BasketBallRenderer;
 
 public class BasketBallView extends GLSurfaceView {
@@ -13,9 +12,9 @@ public class BasketBallView extends GLSurfaceView {
 
     private BasketBallRenderer renderer;
 
-    public BasketBallView(Context context, Camera camera) {
+    public BasketBallView(Context context, BasketBallRenderer renderer) {
         super(context);
-        this.renderer = new BasketBallRenderer(context, camera);
+        this.renderer = renderer;
 
         setEGLContextClientVersion(OPENGL_ES_VERSION);
         setRenderer(renderer);
