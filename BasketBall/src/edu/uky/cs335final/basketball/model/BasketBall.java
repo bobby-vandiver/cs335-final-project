@@ -13,6 +13,7 @@ import java.nio.FloatBuffer;
 import static android.util.FloatMath.*;
 import static android.opengl.GLES20.*;
 
+import static edu.uky.cs335final.basketball.shader.ShaderConstants.COMPONENTS_PER_TEXTURE_COORDINATE;
 import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENT_SIZE;
 import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENTS_PER_POINT;
 
@@ -26,8 +27,6 @@ public class BasketBall implements Renderable {
     private FloatBuffer normalBuffer;
 
     private FloatBuffer textureCoordinatesBuffer;
-
-    private final static int COMPONENTS_PER_TEXTURE_COORDINATE = 2;
     private final int textureStride = COMPONENTS_PER_TEXTURE_COORDINATE * COMPONENT_SIZE;
 
     private final int vertexCount = VERTICAL_SLICES * HORIZONTAL_SLICES * VERTICES_PER_SQUARE;
@@ -61,23 +60,20 @@ public class BasketBall implements Renderable {
     private float timeFactor = DEFAULT_TIME_FACTOR;
 
     private final int texture;
-    private final int bumpMap;
 
-    public BasketBall(Vector position, float radius, OpenGLProgram program, int texture, int bumpMap) {
+    public BasketBall(Vector position, float radius, OpenGLProgram program, int texture) {
 
         Log.d(TAG, "Constructing basketball");
         Log.d(TAG, "position [" + position + "]");
         Log.d(TAG, "radius [" + radius + "]");
 
         Log.d(TAG, "texture [" + texture + "]");
-        Log.d(TAG, "bumpMap [" + bumpMap + "]");
 
         this.position = position;
         this.scaleFactor = new Vector(radius, radius, radius);
         this.openGLProgram = program;
 
         this.texture = texture;
-        this.bumpMap = bumpMap;
 
         final int vertexFloatCount = vertexCount * COMPONENTS_PER_POINT;
 
@@ -220,7 +216,7 @@ public class BasketBall implements Renderable {
         Log.v(TAG, "Binding normals");
         final int normalHandle = openGLProgram.bindVertexAttribute(ShaderConstants.NORMAL, COMPONENTS_PER_POINT, vertexStride, normalBuffer);
 
-        Log.v(TAG, "Binding position");
+        Log.v(TAG, "Binding vertices");
         final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, COMPONENTS_PER_POINT, vertexStride, vertexBuffer);
 
         Log.v(TAG, "Binding texture coordinates");
@@ -228,9 +224,6 @@ public class BasketBall implements Renderable {
 
         Log.v(TAG, "Binding texture");
         openGLProgram.bindTexture2D(ShaderConstants.TEXTURE_UNIT, GL_TEXTURE0, texture);
-
-        Log.v(TAG, "Binding bump map");
-        openGLProgram.bindTexture2D(ShaderConstants.BUMP_MAP_UNIT, GL_TEXTURE1, bumpMap);
 
         final float[] modelViewMatrix = new MatrixBuilder()
                 .scale(scaleFactor.x, scaleFactor.y, scaleFactor.z)

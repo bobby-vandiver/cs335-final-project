@@ -8,7 +8,9 @@ import edu.uky.cs335final.basketball.camera.Camera;
 import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixUtils;
+import edu.uky.cs335final.basketball.model.goal.Goal;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
+import edu.uky.cs335final.basketball.shader.OpenGLProgramFactory;
 import edu.uky.cs335final.basketball.shader.ShaderUtils;
 import edu.uky.cs335final.basketball.shader.TextureUtils;
 
@@ -64,7 +66,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private final Vector lightPosition;
 
     private Camera camera;
+
     private BasketBall basketBall;
+    private Goal goal;
 
     private List<Renderable> models;
 
@@ -112,28 +116,41 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 
-        createBasketBall();
+        if(models.isEmpty())
+            createModels();
     }
 
-    private void createBasketBall() {
+    private void createModels() {
+        basketBall = createBasketBall();
+        models.add(basketBall);
+
+        goal = createGoal();
+        models.add(goal);
+    }
+
+    private BasketBall createBasketBall() {
         Log.d(TAG, "Creating basketball");
 
-        String vertexShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.texture_vertex_shader);
-        String fragmentShaderCode = ShaderUtils.readShaderFromFile(context, R.raw.texture_fragment_shader);
+        OpenGLProgram program = OpenGLProgramFactory.create(context,
+                R.raw.texture_vertex_shader, R.raw.texture_fragment_shader);
 
-        OpenGLProgram program = new OpenGLProgram(vertexShaderCode, fragmentShaderCode);
+        Vector eye = camera.getPosition();
+        Vector position = new Vector(eye).add(DISPLACEMENT);
 
-        if(models.isEmpty()) {
-            Vector eye = camera.getPosition();
-            Vector position = new Vector(eye).add(DISPLACEMENT);
+        int texture = TextureUtils.loadTexture(context, R.drawable.basketball_texture);
 
-            int texture = TextureUtils.loadTexture(context, R.drawable.basketball_texture);
-            int bumpMap = TextureUtils.loadTexture(context, R.drawable.basketball_bump_map);
+        return new BasketBall(position, RADIUS, program, texture);
+    }
 
-            basketBall = new BasketBall(position, RADIUS, program, texture, bumpMap);
+    private Goal createGoal() {
+        Log.d(TAG, "Creating goal");
 
-            models.add(basketBall);
-        }
+        OpenGLProgram program = OpenGLProgramFactory.create(context,
+                R.raw.texture_vertex_shader, R.raw.texture_fragment_shader);
+
+        int backboardTexture = TextureUtils.loadTexture(context, R.drawable.backboard_texture);
+
+        return new Goal(program, backboardTexture);
     }
 
     @Override

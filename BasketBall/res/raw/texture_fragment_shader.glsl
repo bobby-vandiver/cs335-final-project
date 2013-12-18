@@ -3,7 +3,6 @@ precision mediump float;
 uniform vec3 lightPosition;
 
 uniform sampler2D textureUnit;
-uniform sampler2D bumpMapUnit;
 
 varying vec3 surfaceNormal;
 
