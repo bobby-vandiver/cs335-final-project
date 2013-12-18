@@ -26,6 +26,16 @@ public class MatrixBuilder {
         return this;
     }
 
+    public MatrixBuilder invert() {
+        matrix = MatrixUtils.invert(matrix);
+        return this;
+    }
+
+    public MatrixBuilder transpose() {
+        matrix = MatrixUtils.transpose(matrix);
+        return this;
+    }
+
     public MatrixBuilder multiply(float[] lhs) {
         matrix = MatrixUtils.multiply(lhs, matrix);
         return this;

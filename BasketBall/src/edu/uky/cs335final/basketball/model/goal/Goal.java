@@ -8,13 +8,15 @@ public class Goal implements Renderable {
 
     private static final String TAG = Goal.class.getCanonicalName();
 
-    private Pole pole;
     private Backboard backboard;
 
+    private Pole pole;
+    private Hoop hoop;
 
-    public Goal(Backboard backboard, Pole pole) {
+    public Goal(Backboard backboard, Pole pole, Hoop hoop) {
         this.backboard = backboard;
         this.pole = pole;
+        this.hoop = hoop;
     }
 
     @Override
@@ -25,5 +27,8 @@ public class Goal implements Renderable {
 
         Log.v(TAG, "Rendering backboard");
         backboard.render(viewMatrix, projectionMatrix, lightPosition);
+
+        Log.v(TAG, "Rendering hoop");
+        hoop.render(viewMatrix, projectionMatrix, lightPosition);
     }
 }

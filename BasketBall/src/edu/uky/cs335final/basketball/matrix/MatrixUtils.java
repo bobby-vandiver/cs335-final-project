@@ -27,6 +27,18 @@ public class MatrixUtils {
         return rotate;
     }
 
+    public static float[] invert(float[] matrix) {
+        float[] inverted = newMatrix();
+        invertM(inverted, 0, matrix, 0);
+        return inverted;
+    }
+
+    public static float[] transpose(float[] matrix) {
+        float[] transposed = newMatrix();
+        transposeM(transposed, 0, matrix, 0);
+        return transposed;
+    }
+
     public static float[] multiply(float[] leftMatrix, float[] rightMatrix) {
         throwIfInvalidSize(leftMatrix);
         throwIfInvalidSize(rightMatrix);

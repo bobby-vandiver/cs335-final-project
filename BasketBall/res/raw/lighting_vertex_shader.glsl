@@ -1,5 +1,6 @@
 uniform mat4 modelViewProjection;
 uniform mat4 modelView;
+uniform mat4 normalTransformation;
 
 attribute vec4 position;
 attribute vec3 normal;
@@ -12,9 +13,13 @@ varying vec2 interpolatedTextureCoordinates;
 
 void main() {
 
-    interpolatedPosition = vec3(modelView * position);
     interpolatedTextureCoordinates = textureCoordinates;
 
-    surfaceNormal = vec3(modelView * vec4(normal, 0.0));
+    vec4 temp = normalTransformation * vec4(normal, 0.0);
+    surfaceNormal.xyz = temp.xyz;
+
+    temp = modelView * position;
+    interpolatedPosition.xyz = temp.xyz;
+
     gl_Position = modelViewProjection * position;
 }

@@ -14,6 +14,7 @@ public class GoalFactory {
 
     // Position of pole and hoop defined relative to backboard
     private static final Vector POLE_DISPLACEMENT = new Vector(0f, -5f, -2f);
+    private static final Vector HOOP_DISPLACEMENT = new Vector(0f, -2f, 3f);
 
     private static final Vector BACKBOARD_POSITION = new Vector(0f, 10f, 0f);
 
@@ -22,8 +23,9 @@ public class GoalFactory {
 
         Backboard backboard = createBackboard(context);
         Pole pole = createPole(context);
+        Hoop hoop = createHoop(context);
 
-        return new Goal(backboard, pole);
+        return new Goal(backboard, pole, hoop);
     }
 
     private static Backboard createBackboard(Context context) {
@@ -40,5 +42,13 @@ public class GoalFactory {
 
         Vector position = new Vector(BACKBOARD_POSITION).add(POLE_DISPLACEMENT);
         return new Pole(position, program);
+    }
+
+    private static Hoop createHoop(Context context) {
+        OpenGLProgram program = OpenGLProgramFactory.create(context,
+                R.raw.lighting_vertex_shader, R.raw.lighting_fragment_shader);
+
+        Vector position = new Vector(BACKBOARD_POSITION).add(HOOP_DISPLACEMENT);
+        return new Hoop(position, program);
     }
 }

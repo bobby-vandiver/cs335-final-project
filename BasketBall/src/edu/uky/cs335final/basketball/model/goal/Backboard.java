@@ -5,7 +5,6 @@ import edu.uky.cs335final.basketball.geometry.Cuboid;
 import edu.uky.cs335final.basketball.geometry.UnitCuboid;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixBuilder;
-import edu.uky.cs335final.basketball.render.RenderConfig;
 import edu.uky.cs335final.basketball.render.Renderable;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.ShaderConstants;
@@ -130,8 +129,7 @@ public class Backboard implements Renderable {
         openGLProgram.bindUniformMatrix(ShaderConstants.MODEL_VIEW, modelViewMatrix);
 
         Log.v(TAG, "Draw arrays");
-        final int drawMode = RenderConfig.getDrawMode();
-        glDrawArrays(drawMode, 0, vertexCount);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
         glDisableVertexAttribArray(positionHandle);
         glDisableVertexAttribArray(normalHandle);

@@ -43,7 +43,6 @@ public class BasketBall implements Renderable {
     private final float[] textureCoordinates;
 
     private final Vector scaleFactor;
-    private final boolean wireFrame = false;
 
     private Vector position;
     private Vector initialPosition;
@@ -243,8 +242,7 @@ public class BasketBall implements Renderable {
         openGLProgram.bindUniformMatrix(ShaderConstants.MODEL_VIEW, modelViewMatrix);
 
         Log.v(TAG, "Draw arrays");
-        final int drawMode = wireFrame ? GL_LINES : GL_TRIANGLES;
-        glDrawArrays(drawMode, 0, vertexCount);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
         glDisableVertexAttribArray(positionHandle);
         glDisableVertexAttribArray(normalHandle);

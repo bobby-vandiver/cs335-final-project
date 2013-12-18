@@ -64,7 +64,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private final float[] projectionMatrix = MatrixUtils.newMatrix();
 
     private final Context context;
-    private final Vector lightPosition;
+    private final Vector lightPosition = new Vector(0f, 10f, 0f);
 
     private Camera camera;
 
@@ -86,10 +86,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, "Instantiating renderer");
 
         this.context = context;
-        this.lightPosition = new Vector(0f, 10f, 15f);
+        this.camera = camera;
 
         this.models = new ArrayList<Renderable>();
-        this.camera = camera;
     }
 
     public boolean isReplayInProgress() {

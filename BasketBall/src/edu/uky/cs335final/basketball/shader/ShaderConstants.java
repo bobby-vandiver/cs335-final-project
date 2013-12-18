@@ -7,6 +7,8 @@ public class ShaderConstants {
     public static final String POSITION = "position";
     public static final String NORMAL = "normal";
 
+    public static final String NORMAL_TRANSFORMATION = "normalTransformation";
+
     public static final String LIGHT_POSITION = "lightPosition";
 
     public static final String DIFFUSE_COLOR = "diffuseColor";
