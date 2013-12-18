@@ -107,6 +107,8 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
             }
 
             private void enableReplayButton() {
+                Log.d(TAG, "Enabling replay button");
+
                 Button replayButton = (Button) findViewById(R.id.replay_button);
                 replayButton.setVisibility(View.VISIBLE);
 
@@ -124,6 +126,8 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
             }
 
             private void enableSpeedButton() {
+                Log.d(TAG, "Enabling speed control button");
+
                 Button speedButton = (Button) findViewById(R.id.speed_button);
                 speedButton.setVisibility(View.VISIBLE);
 
@@ -185,7 +189,17 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         return new ReplayListener() {
             @Override
             public void onStart() {
-                Log.d(TAG, "onStart");
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        enableMoveableCamera();
+                    }
+                });
+            }
+
+            private void enableMoveableCamera() {
+                Log.d(TAG, "Enabling moveable camera");
+                basketBallView.setUpScaleGestureDetector(BasketBallActivity.this, camera);
             }
 
             @Override
@@ -198,6 +212,9 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
                         Log.d(TAG, "Disabling speed button");
                         disableButton(R.id.speed_button);
+
+                        Log.d(TAG, "Disabling moveable camera");
+                        basketBallView.disableScaleGestureDetector();
                     }
                 });
             }

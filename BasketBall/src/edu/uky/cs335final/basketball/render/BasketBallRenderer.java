@@ -212,7 +212,13 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
             Log.d(TAG, "Preparing for replay shot");
             setReplayFlags();
             basketBall.resetTime();
+            startReplayListener();
         }
+    }
+
+    private void startReplayListener() {
+        if(replayListener != null)
+            replayListener.onStart();
     }
 
     private void setReplayFlags() {
