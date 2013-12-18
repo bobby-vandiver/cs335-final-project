@@ -9,6 +9,7 @@ import edu.uky.cs335final.basketball.R;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixUtils;
 import edu.uky.cs335final.basketball.model.goal.Goal;
+import edu.uky.cs335final.basketball.model.goal.GoalFactory;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.OpenGLProgramFactory;
 import edu.uky.cs335final.basketball.shader.ShaderUtils;
@@ -124,7 +125,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         basketBall = createBasketBall();
         models.add(basketBall);
 
-        goal = createGoal();
+        goal = GoalFactory.create(context);
         models.add(goal);
     }
 
@@ -140,17 +141,6 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         int texture = TextureUtils.loadTexture(context, R.drawable.basketball_texture);
 
         return new BasketBall(position, RADIUS, program, texture);
-    }
-
-    private Goal createGoal() {
-        Log.d(TAG, "Creating goal");
-
-        OpenGLProgram program = OpenGLProgramFactory.create(context,
-                R.raw.texture_vertex_shader, R.raw.texture_fragment_shader);
-
-        int backboardTexture = TextureUtils.loadTexture(context, R.drawable.backboard_texture);
-
-        return new Goal(program, backboardTexture);
     }
 
     @Override

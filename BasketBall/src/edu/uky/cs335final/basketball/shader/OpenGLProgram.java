@@ -32,9 +32,21 @@ public class OpenGLProgram {
         return handle;
     }
 
-    public int bindUniformVector(String location, float[] vector) {
+    public int bindUniformFloat(String location, float value) {
+        final int handle = glGetUniformLocation(program, location);
+        glUniform1f(handle, value);
+        return handle;
+    }
+
+    public int bindUniformVector3(String location, float[] vector) {
         final int handle = glGetUniformLocation(program, location);
         glUniform3fv(handle, 1, vector, 0);
+        return handle;
+    }
+
+    public int bindUniformVector4(String location, float[] vector) {
+        final int handle = glGetUniformLocation(program, location);
+        glUniform4fv(handle, 1, vector, 0);
         return handle;
     }
 

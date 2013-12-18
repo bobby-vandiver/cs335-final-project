@@ -211,7 +211,7 @@ public class BasketBall implements Renderable {
         openGLProgram.useProgram();
 
         Log.v(TAG, "Binding light position");
-        openGLProgram.bindUniformVector(ShaderConstants.LIGHT_POSITION, lightPosition.asVec3());
+        openGLProgram.bindUniformVector3(ShaderConstants.LIGHT_POSITION, lightPosition.asVec3());
 
         Log.v(TAG, "Binding normals");
         final int normalHandle = openGLProgram.bindVertexAttribute(ShaderConstants.NORMAL, COMPONENTS_PER_POINT, vertexStride, normalBuffer);

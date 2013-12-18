@@ -10,49 +10,21 @@ import edu.uky.cs335final.basketball.render.Renderable;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.ShaderConstants;
 import edu.uky.cs335final.basketball.util.BufferUtils;
+import edu.uky.cs335final.basketball.util.ColorUtils;
 
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
 
-import static edu.uky.cs335final.basketball.shader.ShaderConstants.COMPONENTS_PER_TEXTURE_COORDINATE;
-import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENT_SIZE;
 import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENTS_PER_POINT;
+import static edu.uky.cs335final.basketball.geometry.Vector.COMPONENT_SIZE;
 
+public class Pole implements Renderable {
 
-public class Backboard implements Renderable {
-
-    private static final String TAG = Backboard.class.getCanonicalName();
+    private static final String TAG = Pole.class.getCanonicalName();
 
     private static final float[] vertices = UnitCuboid.VERTICES;
     private static final float[] normals = UnitCuboid.NORMALS;
-
-    private static final float[] textureCoordinates = {
-
-            // front
-            1.0f, 0.0f,     0.0f, 0.0f,     0.0f, 1.0f,     // v0-v1-v2
-            0.0f, 1.0f,     1.0f, 1.0f,     1.0f, 0.0f,     // v2-v3-v0
-
-            // right
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-
-            // top
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-
-            // left
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-
-            // bottom
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-
-            // back
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-            0.1f, 0.1f,     0.1f, 0.1f,     0.1f, 0.1f,
-    };
 
     private final OpenGLProgram openGLProgram;
 
@@ -62,16 +34,18 @@ public class Backboard implements Renderable {
     private final int vertexCount = vertices.length / COMPONENTS_PER_POINT;
     private final int vertexStride = COMPONENTS_PER_POINT * COMPONENT_SIZE;
 
-    private FloatBuffer textureCoordinatesBuffer;
-    private final int textureStride = COMPONENTS_PER_TEXTURE_COORDINATE * COMPONENT_SIZE;
+    private final float[] color = ColorUtils.fromHexCode("#C0C0C0");
+    private Cuboid rectangularPrism;
 
-    private Cuboid board;
+    private final float[] diffuseColor = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+    private final float diffuseIntensity = 0.4f;
 
-    private final int texture;
+    final float[] specularColor = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+    final float specularIntensity = 0.7f;
+    final float shininess = 100.0f;
 
-    public Backboard(Vector position, OpenGLProgram program, int texture) {
+    public Pole(Vector position, OpenGLProgram program) {
         this.openGLProgram = program;
-        this.texture = texture;
 
         Log.d(TAG, "Creating vertex buffer");
         this.vertexBuffer = BufferUtils.createBuffer(vertices);
@@ -79,10 +53,7 @@ public class Backboard implements Renderable {
         Log.d(TAG, "Creating normal buffer");
         this.normalBuffer = BufferUtils.createBuffer(normals);
 
-        Log.d(TAG, "Creating texture coordinates buffer");
-        this.textureCoordinatesBuffer = BufferUtils.createBuffer(textureCoordinates);
-
-        this.board = new Cuboid(position, 3f, 2.5f, 1f);
+        this.rectangularPrism = new Cuboid(position, 0.5f, 5f, 1f);
     }
 
     @Override
@@ -98,17 +69,23 @@ public class Backboard implements Renderable {
         Log.v(TAG, "Binding vertices");
         final int positionHandle = openGLProgram.bindVertexAttribute(ShaderConstants.POSITION, COMPONENTS_PER_POINT, vertexStride, vertexBuffer);
 
-        Log.v(TAG, "Binding texture coordinates");
-        openGLProgram.bindVertexAttribute(ShaderConstants.TEXTURE_COORDINATES, COMPONENTS_PER_TEXTURE_COORDINATE, textureStride, textureCoordinatesBuffer);
+        Log.v(TAG, "Binding color");
+        openGLProgram.bindUniformVector4(ShaderConstants.COLOR, color);
 
-        Log.v(TAG, "Binding texture");
-        openGLProgram.bindTexture2D(ShaderConstants.TEXTURE_UNIT, GL_TEXTURE0, texture);
+        Log.v(TAG, "Binding diffuse lighting params");
+        openGLProgram.bindUniformVector4(ShaderConstants.DIFFUSE_COLOR, diffuseColor);
+        openGLProgram.bindUniformFloat(ShaderConstants.DIFFUSE_INTENSITY, diffuseIntensity);
 
-        final Vector center = board.getCenter();
+        Log.v(TAG, "Binding specular lighting params");
+        openGLProgram.bindUniformVector4(ShaderConstants.SPECULAR_COLOR, specularColor);
+        openGLProgram.bindUniformFloat(ShaderConstants.SPECULAR_INTENSITY, specularIntensity);
+        openGLProgram.bindUniformFloat(ShaderConstants.SHININESS, shininess);
 
-        final float width = board.getWidth();
-        final float length = board.getLength();
-        final float depth = board.getDepth();
+        final Vector center = rectangularPrism.getCenter();
+
+        final float width = rectangularPrism.getWidth();
+        final float length = rectangularPrism.getLength();
+        final float depth = rectangularPrism.getDepth();
 
         Log.v(TAG, "Building model view matrix");
 
@@ -135,5 +112,4 @@ public class Backboard implements Renderable {
 
         glDisableVertexAttribArray(positionHandle);
         glDisableVertexAttribArray(normalHandle);
-    }
-}
+    }}
