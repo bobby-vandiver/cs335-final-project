@@ -43,6 +43,7 @@ public class BasketBall implements Renderable {
     private final float[] textureCoordinates;
 
     private final Vector scaleFactor;
+    private final float radius;
 
     private Vector position;
     private Vector initialPosition;
@@ -69,6 +70,7 @@ public class BasketBall implements Renderable {
         Log.d(TAG, "texture [" + texture + "]");
 
         this.position = position;
+        this.radius = radius;
         this.scaleFactor = new Vector(radius, radius, radius);
         this.openGLProgram = program;
 
@@ -171,6 +173,14 @@ public class BasketBall implements Renderable {
         textureCoordinates[position] = t;
     }
 
+    public Vector getPosition() {
+        return position;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
     // Invoking this method indicates an intention to move the basketball in the world
     public void setDirection(Vector direction, float speed) {
         Log.d(TAG, "direction [" + direction + "]");
@@ -199,11 +209,6 @@ public class BasketBall implements Renderable {
         Vector acceleration = new Vector(GRAVITY).multiply(time * time).multiply(0.5f);
 
         position = new Vector(initialPosition).add(velocity).add(acceleration);
-    }
-
-    public boolean collides() {
-        // TODO: Remove hardcoded checks for XZ plane collision
-        return (position.x < 0f) || (position.y < 0f);
     }
 
     public void render(float[] viewMatrix, float[] projectionMatrix, Vector lightPosition) {

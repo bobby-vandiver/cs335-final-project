@@ -5,10 +5,10 @@ import edu.uky.cs335final.basketball.util.MathUtils;
 
 public class CollisionDetector {
 
-    public enum SpherePosition { INTERSECTS, IN_FRONT, BEHIND }
+    public enum CollisionResult { INTERSECTS, IN_FRONT, BEHIND }
 
     // Adapted from: http://www.opengl.org/discussion_boards/showthread.php/140321-spheres-plane-intersection
-    public static SpherePosition checkSpherePlaneCollision(Vector sphereCenter, float radius, Vector planeNormal, Vector pointOnPlane) {
+    public static CollisionResult checkSpherePlaneCollision(Vector sphereCenter, float radius, Vector planeNormal, Vector pointOnPlane) {
 
         float planeDistanceFromOrigin = MathUtils.distance(planeNormal, pointOnPlane);
         float spherePlaneDistance = Vector.dot(planeNormal, sphereCenter) + planeDistanceFromOrigin;
@@ -17,13 +17,13 @@ public class CollisionDetector {
         boolean inFront = inFront(spherePlaneDistance, radius);
 
         if(intersects) {
-            return SpherePosition.INTERSECTS;
+            return CollisionResult.INTERSECTS;
         }
         else if(inFront) {
-            return SpherePosition.IN_FRONT;
+            return CollisionResult.IN_FRONT;
         }
         else {
-            return SpherePosition.BEHIND;
+            return CollisionResult.BEHIND;
         }
     }
 

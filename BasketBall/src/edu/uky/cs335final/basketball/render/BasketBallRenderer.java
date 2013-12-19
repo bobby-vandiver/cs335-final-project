@@ -12,7 +12,6 @@ import edu.uky.cs335final.basketball.model.goal.Goal;
 import edu.uky.cs335final.basketball.model.goal.GoalFactory;
 import edu.uky.cs335final.basketball.shader.OpenGLProgram;
 import edu.uky.cs335final.basketball.shader.OpenGLProgramFactory;
-import edu.uky.cs335final.basketball.shader.ShaderUtils;
 import edu.uky.cs335final.basketball.shader.TextureUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -20,6 +19,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static edu.uky.cs335final.basketball.collision.CollisionDetector.*;
 
 import static android.opengl.GLES20.*;
 import static android.opengl.Matrix.*;
@@ -84,6 +85,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
     private ShotListener shotListener;
     private ReplayListener replayListener;
+
+    private Vector floorNormal = new Vector(0, 1, 0);
+    private Vector pointOnFloor = new Vector(0, 0, 0);
 
     public BasketBallRenderer(Context context, Camera camera) {
         Log.d(TAG, "Instantiating renderer");
@@ -175,7 +179,6 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, "Updating ball");
         basketBall.update();
 
-        // TODO: Check for collision with the floor (XZ plane)
         if(collidesWithFloor()) {
             Log.d(TAG, "Ball hit the floor");
             setShotCompleteFlags();
@@ -238,8 +241,11 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     }
 
     private boolean collidesWithFloor() {
-        // TODO: Pass plane information into collides()
-        return basketBall.collides();
+        Vector center = basketBall.getPosition();
+        float radius = basketBall.getRadius();
+
+        CollisionResult result = checkSpherePlaneCollision(center, radius, floorNormal, pointOnFloor);
+        return result.equals(CollisionResult.INTERSECTS);
     }
 
     public boolean canShoot() {
