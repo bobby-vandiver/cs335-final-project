@@ -94,6 +94,17 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
     private ShotListener createShotListener() {
         return new ShotListener() {
+
+            @Override
+            public void onStart() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "Shot initiated!");
+                    }
+                });
+            }
+
             @Override
             public void onComplete() {
 

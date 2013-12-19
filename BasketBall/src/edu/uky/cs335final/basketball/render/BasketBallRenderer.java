@@ -30,6 +30,9 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     // at different points in the lifecycle of the shot
     public static interface ShotListener {
 
+        // This is executed when a shot begins
+        public void onStart();
+
         // This is executed when a shot is first completed regardless of
         // whether it was successful or not. This does NOT get executed at
         // the end of a replay.
@@ -248,6 +251,13 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
 
         Vector direction = new Vector(camera.getDirection());
         basketBall.setDirection(direction, speed);
+
+        startShotListener();
+    }
+
+    private void startShotListener() {
+        if(shotListener != null)
+            shotListener.onStart();
     }
 
     public void changeBallUpdateSpeed(float factor) {
