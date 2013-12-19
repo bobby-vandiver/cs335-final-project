@@ -1,6 +1,7 @@
 package edu.uky.cs335final.basketball.model.goal;
 
 import android.util.Log;
+import edu.uky.cs335final.basketball.collision.BoundingBox;
 import edu.uky.cs335final.basketball.geometry.Cuboid;
 import edu.uky.cs335final.basketball.geometry.Plane;
 import edu.uky.cs335final.basketball.geometry.UnitCuboid;
@@ -85,10 +86,21 @@ public class Backboard implements Renderable {
         this.board = new Cuboid(position, 3f, 2.5f, 1f);
     }
 
-    public Plane getCollisionPlane() {
-        Vector normal = board.getNormal();
-        Vector point = board.getCenter();
-        return new Plane(normal, point);
+//    public Plane getCollisionPlane() {
+//        Vector normal = board.getNormal();
+//        Vector point = board.getCenter();
+//        return new Plane(normal, point);
+//    }
+
+    public BoundingBox getBoundingBox() {
+
+        Vector center = board.getCenter();
+
+        float width = board.getWidth();
+        float length = board.getLength();
+        float depth = board.getDepth();
+
+        return new BoundingBox(center, width, length, depth);
     }
 
     @Override

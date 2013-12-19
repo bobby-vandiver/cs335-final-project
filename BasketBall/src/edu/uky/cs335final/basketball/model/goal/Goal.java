@@ -1,6 +1,7 @@
 package edu.uky.cs335final.basketball.model.goal;
 
 import android.util.Log;
+import edu.uky.cs335final.basketball.collision.BoundingBox;
 import edu.uky.cs335final.basketball.geometry.Plane;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.render.Renderable;
@@ -20,8 +21,12 @@ public class Goal implements Renderable {
         this.hoop = hoop;
     }
 
-    public Plane getBackboardPlane() {
-        return backboard.getCollisionPlane();
+//    public Plane getBackboardPlane() {
+//        return backboard.getCollisionPlane();
+//    }
+
+    public BoundingBox getBackboardBoundingBox() {
+        return backboard.getBoundingBox();
     }
 
     @Override

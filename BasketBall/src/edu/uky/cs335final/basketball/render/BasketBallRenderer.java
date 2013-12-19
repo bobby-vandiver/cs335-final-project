@@ -3,6 +3,8 @@ package edu.uky.cs335final.basketball.render;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import edu.uky.cs335final.basketball.collision.BoundingBox;
+import edu.uky.cs335final.basketball.collision.CollisionDetector;
 import edu.uky.cs335final.basketball.geometry.Plane;
 import edu.uky.cs335final.basketball.geometry.Sphere;
 import edu.uky.cs335final.basketball.model.BasketBall;
@@ -197,8 +199,13 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     }
 
     private boolean collidesWithBackboard() {
-        Plane backboard = goal.getBackboardPlane();
-        return collidesWithPlane(backboard);
+//        Plane backboard = goal.getBackboardPlane();
+//        return collidesWithPlane(backboard);
+
+        Sphere ball = basketBall.getSphere();
+        BoundingBox boundingBox = goal.getBackboardBoundingBox();
+
+        return CollisionDetector.intersectsWith(boundingBox, ball);
     }
 
     private boolean collidesWithFloor() {
