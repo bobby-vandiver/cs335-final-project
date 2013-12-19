@@ -2,6 +2,7 @@ package edu.uky.cs335final.basketball.model.goal;
 
 import android.util.Log;
 import edu.uky.cs335final.basketball.geometry.Cuboid;
+import edu.uky.cs335final.basketball.geometry.Plane;
 import edu.uky.cs335final.basketball.geometry.UnitCuboid;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixBuilder;
@@ -82,6 +83,12 @@ public class Backboard implements Renderable {
         this.textureCoordinatesBuffer = BufferUtils.createBuffer(textureCoordinates);
 
         this.board = new Cuboid(position, 3f, 2.5f, 1f);
+    }
+
+    public Plane getCollisionPlane() {
+        Vector normal = board.getNormal();
+        Vector point = board.getCenter();
+        return new Plane(normal, point);
     }
 
     @Override

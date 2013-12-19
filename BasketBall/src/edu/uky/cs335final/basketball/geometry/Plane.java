@@ -17,4 +17,9 @@ public class Plane {
     public Vector getPoint() {
         return point;
     }
+
+    @Override
+    public String toString() {
+        return "normal: " + normal + " -- point: " + point;
+    }
 }

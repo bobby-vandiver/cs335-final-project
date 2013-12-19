@@ -22,7 +22,7 @@ public class Cuboid {
 
     public Vector getNormal() {
         Vector a = new Vector(width, 0, 0);
-        Vector b = new Vector(length, 0, 0);
+        Vector b = new Vector(0, length, 0);
         return a.cross(b).normalize();
     }
 

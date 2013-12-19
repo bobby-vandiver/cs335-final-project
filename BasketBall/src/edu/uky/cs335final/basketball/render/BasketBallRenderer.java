@@ -185,6 +185,10 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, "Updating ball");
         basketBall.update();
 
+        if(collidesWithBackboard()) {
+            Log.d(TAG, "Ball hit the backboard");
+        }
+
         if(collidesWithFloor()) {
             Log.d(TAG, "Ball hit the floor");
             setShotCompleteFlags();
@@ -192,9 +196,18 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         }
     }
 
+    private boolean collidesWithBackboard() {
+        Plane backboard = goal.getBackboardPlane();
+        return collidesWithPlane(backboard);
+    }
+
     private boolean collidesWithFloor() {
+        return collidesWithPlane(floor);
+    }
+
+    private boolean collidesWithPlane(Plane plane) {
         Sphere ball = basketBall.getSphere();
-        CollisionResult result = checkSpherePlaneCollision(ball, floor);
+        CollisionResult result = checkSpherePlaneCollision(ball, plane);
         return result.equals(CollisionResult.INTERSECTS);
     }
 
