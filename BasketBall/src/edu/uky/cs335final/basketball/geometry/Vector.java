@@ -13,6 +13,14 @@ public class Vector {
     public float y;
     public float z;
 
+    public static Vector cross(Vector a, Vector b) {
+        return a.cross(b);
+    }
+
+    public static float dot(Vector a, Vector b) {
+        return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+    }
+
     public Vector() {
         this(0f, 0f, 0f);
     }
