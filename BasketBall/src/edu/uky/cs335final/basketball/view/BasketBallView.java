@@ -16,6 +16,7 @@ public class BasketBallView extends GLSurfaceView {
     private static final int OPENGL_ES_VERSION = 2;
 
     private static final float SCALE_MODIFIER = 0.25f;
+    private static final float POWER_MODIFIER = 1.5f;
 
     private BasketBallRenderer renderer;
     private ScaleGestureDetector scaleGestureDetector;
@@ -87,7 +88,7 @@ public class BasketBallView extends GLSurfaceView {
             public void run() {
                 Log.d(TAG, "Queueing shoot event");
                 if(renderer.canShoot())
-                    renderer.shootBall(power);
+                    renderer.shootBall(power * POWER_MODIFIER);
             }
         });
     }
