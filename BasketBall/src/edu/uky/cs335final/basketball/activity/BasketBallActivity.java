@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,6 +49,13 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
     private Handler handler;
 
+    
+    MediaPlayer mpSwoosh;
+	MediaPlayer mpIntro;
+	MediaPlayer mpDribble;
+	MediaPlayer mpFailure;
+
+    
     private static final float[] speedFactors = { 1.0f, 0.25f, 0.1f };
     private int speedFactorSelector = 0;
 
@@ -55,6 +63,13 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mpSwoosh = MediaPlayer.create(this, R.raw.swoosh);
+		mpIntro = MediaPlayer.create(this, R.raw.intro);
+		mpDribble = MediaPlayer.create(this, R.raw.dribble);
+		mpFailure = MediaPlayer.create(this, R.raw.failure);
+		
+        
+        
         // Retain handle for inter-thread communication
         handler = new Handler(Looper.getMainLooper());
 
@@ -70,6 +85,9 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
         setContentView(basketBallView);
 
         addHud();
+        mpIntro.start();
+		mpDribble.start();
+		
     }
 
     private Camera createCamera() {
@@ -188,10 +206,13 @@ public class BasketBallActivity extends Activity implements SensorEventListener 
 
             @Override
             public void onSuccess() {
+				mpSwoosh.start();
+
             }
 
             @Override
             public void onFailure() {
+            	mpFailure.start();
             }
         };
     }
