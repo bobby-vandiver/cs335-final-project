@@ -199,9 +199,6 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     }
 
     private boolean collidesWithBackboard() {
-//        Plane backboard = goal.getBackboardPlane();
-//        return collidesWithPlane(backboard);
-
         Sphere ball = basketBall.getSphere();
         BoundingBox boundingBox = goal.getBackboardBoundingBox();
 

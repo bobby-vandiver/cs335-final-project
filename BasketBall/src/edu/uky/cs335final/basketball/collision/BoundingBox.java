@@ -33,12 +33,4 @@ public class BoundingBox {
     public Vector getMaximum() {
         return maximum;
     }
-
-    public boolean collides(Vector point) {
-        boolean insideX = (point.x >= minimum.x) && (point.x <= maximum.x);
-        boolean insideY = (point.y >= minimum.y) && (point.y <= maximum.y);
-        boolean insideZ = (point.z >= minimum.z) && (point.z <= maximum.z);
-
-        return insideX && insideY && insideZ;
-    }
 }

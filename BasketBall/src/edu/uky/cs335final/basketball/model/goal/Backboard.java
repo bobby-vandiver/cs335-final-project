@@ -86,12 +86,6 @@ public class Backboard implements Renderable {
         this.board = new Cuboid(position, 3f, 2.5f, 1f);
     }
 
-//    public Plane getCollisionPlane() {
-//        Vector normal = board.getNormal();
-//        Vector point = board.getCenter();
-//        return new Plane(normal, point);
-//    }
-
     public BoundingBox getBoundingBox() {
 
         Vector center = board.getCenter();

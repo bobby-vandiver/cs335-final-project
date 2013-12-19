@@ -9,7 +9,6 @@ public class CollisionDetector {
 
     public enum CollisionResult { INTERSECTS, IN_FRONT, BEHIND }
 
-
     // Source:
     // http://stackoverflow.com/questions/15247347/collision-detection-between-a-boundingbox-and-a-sphere-in-libgdx
     public static boolean intersectsWith(BoundingBox boundingBox, Sphere sphere) {
