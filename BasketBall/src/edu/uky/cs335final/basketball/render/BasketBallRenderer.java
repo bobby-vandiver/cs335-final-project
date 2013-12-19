@@ -3,6 +3,8 @@ package edu.uky.cs335final.basketball.render;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import edu.uky.cs335final.basketball.geometry.Plane;
+import edu.uky.cs335final.basketball.geometry.Sphere;
 import edu.uky.cs335final.basketball.model.BasketBall;
 import edu.uky.cs335final.basketball.camera.Camera;
 import edu.uky.cs335final.basketball.R;
@@ -86,8 +88,7 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
     private ShotListener shotListener;
     private ReplayListener replayListener;
 
-    private Vector floorNormal = new Vector(0, 1, 0);
-    private Vector pointOnFloor = new Vector(0, 0, 0);
+    private Plane floor;
 
     public BasketBallRenderer(Context context, Camera camera) {
         Log.d(TAG, "Instantiating renderer");
@@ -96,6 +97,11 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         this.camera = camera;
 
         this.models = new ArrayList<Renderable>();
+
+        Vector floorNormal = new Vector(0, 1, 0);
+        Vector pointOnFloor = new Vector(0, 0, 0);
+
+        this.floor = new Plane(floorNormal, pointOnFloor);
     }
 
     public boolean isReplayInProgress() {
@@ -186,6 +192,12 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         }
     }
 
+    private boolean collidesWithFloor() {
+        Sphere ball = basketBall.getSphere();
+        CollisionResult result = checkSpherePlaneCollision(ball, floor);
+        return result.equals(CollisionResult.INTERSECTS);
+    }
+
     private void setShotCompleteFlags() {
         shotInProgress = false;
         shotFinished = true;
@@ -238,14 +250,6 @@ public class BasketBallRenderer implements GLSurfaceView.Renderer {
         shotInProgress = true;
         replayInProgress = true;
         gameOver = false;
-    }
-
-    private boolean collidesWithFloor() {
-        Vector center = basketBall.getPosition();
-        float radius = basketBall.getRadius();
-
-        CollisionResult result = checkSpherePlaneCollision(center, radius, floorNormal, pointOnFloor);
-        return result.equals(CollisionResult.INTERSECTS);
     }
 
     public boolean canShoot() {

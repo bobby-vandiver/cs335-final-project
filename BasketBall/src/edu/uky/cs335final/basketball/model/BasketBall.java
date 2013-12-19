@@ -1,6 +1,7 @@
 package edu.uky.cs335final.basketball.model;
 
 import android.util.Log;
+import edu.uky.cs335final.basketball.geometry.Sphere;
 import edu.uky.cs335final.basketball.geometry.Vector;
 import edu.uky.cs335final.basketball.matrix.MatrixBuilder;
 import edu.uky.cs335final.basketball.render.Renderable;
@@ -173,12 +174,8 @@ public class BasketBall implements Renderable {
         textureCoordinates[position] = t;
     }
 
-    public Vector getPosition() {
-        return position;
-    }
-
-    public float getRadius() {
-        return radius;
+    public Sphere getSphere() {
+        return new Sphere(position, radius);
     }
 
     // Invoking this method indicates an intention to move the basketball in the world
